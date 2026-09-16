@@ -79,3 +79,22 @@ def test_todas_las_fechas_son_date():
     assert len(fechas) > 10
     for ruta, valor in fechas:
         assert valor is None or type(valor) is date, ruta
+
+
+CARGA = Path(__file__).resolve().parent.parent / "src" / "plazos" / "carga.py"
+
+
+def test_los_codigos_son_los_del_documento():
+    """§8.1: los códigos de la tabla son los de ERRORES, en el mismo orden."""
+    from plazos.modelo import ERRORES
+
+    tabla = _seccion(TEXTO, "### 8.1. Errores")
+    assert re.findall(r"^\| `(ERR-\d\d)` \|", tabla, re.MULTILINE) == list(ERRORES)
+
+
+def test_las_decisiones_citadas_en_el_codigo_existen():
+    """Cada «Modelo, V-n» del código es una fila del §8.2."""
+    decisiones = set(re.findall(r"^\| (V-\d+) \|", _seccion(TEXTO, "### 8.2. Decisiones de validación"), re.MULTILINE))
+    assert decisiones == {f"V-{n}" for n in range(1, 18)}
+    citadas = set(re.findall(r"Modelo, (V-\d+)", CARGA.read_text(encoding="utf-8")))
+    assert citadas and citadas <= decisiones

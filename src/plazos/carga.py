@@ -4,12 +4,12 @@
 None si hay errores) y los errores del §8 del modelo. No calcula nada, y la
 validación no depende del régimen (modelo, §0, principio 3).
 
-Se recogen todos los errores de una pasada, no solo el primero. Un dato mal
-formado se anota como ERR-01 y las comprobaciones que dependen de él se
-omiten, para no dar errores derivados de otro.
+Se recogen todos los errores de una pasada, no solo el primero (modelo, §8).
+Un dato mal formado se anota como ERR-01 y las comprobaciones que dependen de
+él se omiten (modelo, V-17).
 
-Los puntos que el modelo deja sin decidir para la implementación están
-marcados con «AMBIGÜEDAD:».
+Las decisiones de validación del modelo se citan como «Modelo, V-n». Los
+demás comentarios son de implementación.
 """
 
 import json
@@ -125,15 +125,13 @@ class _Carga:
         try:
             datos, repetidas = _leer_json(texto)
         except ValueError as e:
-            # AMBIGÜEDAD: el §8 no tiene código para un JSON mal formado. Se
-            # usa ERR-01, el error de estructura.
+            # Modelo, V-3: un JSON mal formado es ERR-01.
             self.error("ERR-01", f"El JSON no es válido: {e}")
             return self._resultado(None)
 
         for clave in repetidas:
-            # AMBIGÜEDAD: el modelo no trata las claves repetidas. El módulo
-            # json se quedaría en silencio con la última; se rechazan como
-            # ERR-01.
+            # Modelo, V-3: una clave repetida es ERR-01. El módulo json se quedaría en
+            # silencio con el último valor.
             self.error("ERR-01", f"La clave «{clave}» aparece repetida en un mismo objeto")
 
         if isinstance(datos, dict) and "regimen" in datos:
@@ -181,11 +179,7 @@ class _Carga:
                 self.error("ERR-01", f"Falta el campo obligatorio «{clave}»", _ruta(ruta, clave))
         for clave in obj:
             if clave not in obligatorios and clave not in opcionales and clave not in ignorar:
-                # AMBIGÜEDAD: el §8 solo nombra `regimen` como campo que
-                # sobra. Se rechaza cualquier campo desconocido, por la misma
-                # razón que `regimen`: un campo que el cálculo no lee, como
-                # `prorroga_nacional_77_4` de la versión 1 o una errata, no
-                # debe pasar como si sirviera de algo.
+                # Modelo, V-2: cualquier campo desconocido es ERR-01, no solo `regimen`.
                 self.error("ERR-01", f"Campo desconocido «{clave}»", _ruta(ruta, clave))
         return True
 
@@ -205,9 +199,7 @@ class _Carga:
         return valor
 
     def _texto(self, obj, clave, ruta, nulo=False):
-        # AMBIGÜEDAD: el modelo no dice si un texto puede estar vacío. Se
-        # admite: ningún campo de texto interviene en el cálculo salvo como
-        # identificador, y un `id` vacío sigue pudiendo ser único.
+        # Modelo, V-11: se admiten textos vacíos.
         return self._campo(obj, clave, ruta, lambda v: isinstance(v, str), "un texto", nulo)
 
     def _booleano(self, obj, clave, ruta):
@@ -249,8 +241,7 @@ class _Carga:
             False,
         )
         if isinstance(version, int) and version != VERSION_MODELO:
-            # AMBIGÜEDAD: el modelo fija la versión 2 pero no dice qué código
-            # lleva otra. Se trata como un valor no válido (ERR-01).
+            # Modelo, V-3: otra versión es ERR-01.
             self.error("ERR-01", f"«version_modelo» debe ser {VERSION_MODELO}", "version_modelo")
             return INVALIDO
         return version
@@ -315,9 +306,7 @@ class _Carga:
     def _hecho_inicial(self, expediente):
         obj = expediente.get("hecho_inicial")
         ruta = "expediente.hecho_inicial"
-        # AMBIGÜEDAD: la tabla del §3 no tiene columna «Obligatorio». Los seis
-        # campos se piden siempre, con null cuando no aplican, como en el
-        # ejemplo del §1: así un campo olvidado no se confunde con un null.
+        # Modelo, V-4: los seis campos son obligatorios, con null si no aplican.
         if not self._objeto(obj, ruta, self.CAMPOS_HECHO):
             return None
         tipo = self._enumerado(obj, "tipo", ruta, TIPOS_HECHO, nulo=True)
@@ -350,9 +339,7 @@ class _Carga:
         """ERR-02 y ERR-03. Solo con `tipo` válido; un campo mal formado ya es ERR-01."""
         if tipo is None:
             # §4.5: «usa `hecho_inicial` con todos los campos a `null`».
-            # AMBIGÜEDAD: el §8 no dice qué código lleva un campo rellenado con
-            # `tipo = null`. Se usa ERR-02, que es el de las fechas que no
-            # corresponden al tipo.
+            # Modelo, V-5: con `tipo = null`, un campo con valor es ERR-02.
             rellenos = [c for c, v in {**fechas, "objeto_negativa": objeto_negativa}.items() if _presente(v)]
             for clave in rellenos:
                 self.error("ERR-02", f"Con «tipo» null, «{clave}» debe ser null (§4.5)", _ruta(ruta, clave))
@@ -368,9 +355,7 @@ class _Carga:
                 self.error("ERR-02", f"Con «tipo» «{tipo}», «{clave}» debe ser null", _ruta(ruta, clave))
 
         if tipo != RELACION_DE_NEGOCIOS and _presente(fechas["fecha_inicio"]):
-            # AMBIGÜEDAD: el §3 define `fecha_inicio` como «Inicio de la
-            # relación de negocios» pero no dice qué pasa con otro tipo. Se
-            # rechaza como ERR-02: es una fecha de otro tipo de hecho.
+            # Modelo, V-6: `fecha_inicio` solo con relación de negocios; si no, ERR-02.
             self.error(
                 "ERR-02",
                 f"Con «tipo» «{tipo}», «fecha_inicio» debe ser null: es el inicio de una relación de negocios",
@@ -381,9 +366,7 @@ class _Carga:
             if objeto_negativa is None:
                 self.error("ERR-03", "Una negativa necesita «objeto_negativa»", _ruta(ruta, "objeto_negativa"))
         elif _presente(objeto_negativa):
-            # AMBIGÜEDAD: el modelo no dice qué pasa con `objeto_negativa`
-            # rellenado sin negativa. Se rechaza como ERR-02, un dato de otro
-            # tipo de hecho.
+            # Modelo, V-7: `objeto_negativa` solo con negativa; si no, ERR-02.
             self.error(
                 "ERR-02",
                 f"Con «tipo» «{tipo}», «objeto_negativa» debe ser null",
@@ -410,9 +393,7 @@ class _Carga:
         lista = self._campo(expediente, "documentos", "expediente", lambda v: isinstance(v, list), "una lista", False)
         if not isinstance(lista, list):
             return []
-        # AMBIGÜEDAD: el modelo no dice si la lista puede estar vacía. Se
-        # admite: un expediente sin documentos no tiene nada que calcular,
-        # pero no es incoherente.
+        # Modelo, V-12: se admite la lista vacía.
         documentos = [self._documento(dato, f"expediente.documentos[{i}]", hecho) for i, dato in enumerate(lista)]
         self._comprobar_ids(lista, documentos)
         return documentos
@@ -423,7 +404,8 @@ class _Carga:
             return None
         categoria = self._enumerado(obj, "categoria", ruta, CATEGORIAS)
         if categoria is None or categoria is INVALIDO:
-            # Sin categoría no se sabe qué campos lleva: solo se comprueban los comunes.
+            # Modelo, V-17: sin categoría no se sabe qué campos lleva, así que solo se
+            # comprueban los comunes.
             self._objeto(obj, ruta, self.COMUNES, ignorar=tuple(obj))
             self._texto(obj, "id", ruta)
             self._fecha(obj, "fecha_documento", ruta)
@@ -434,9 +416,7 @@ class _Carga:
         comunes = {
             "id": self._texto(obj, "id", ruta),
             "fecha_documento": self._fecha(obj, "fecha_documento", ruta),
-            # AMBIGÜEDAD: `descripcion` es «cadena, no obligatorio», sin
-            # null. Se admite null como equivalente a omitirla: es texto
-            # libre que el cálculo no usa.
+            # Modelo, V-9: `descripcion` a null equivale a omitirla.
             "descripcion": self._texto(obj, "descripcion", ruta, nulo=True),
         }
 
@@ -462,10 +442,7 @@ class _Carga:
         )
 
     def _operacion(self, obj, ruta, hecho, comunes):
-        # AMBIGÜEDAD: el tipo de `fecha_ejecucion_operacion` es «fecha», sin
-        # null, y solo es obligatoria dentro de una relación. Se admite null
-        # como equivalente a omitirla, y dentro de una relación los dos casos
-        # son ERR-08 («ausente»).
+        # Modelo, V-8: null equivale a omitirla; dentro de una relación, los dos son ERR-08.
         fecha = self._fecha(obj, "fecha_ejecucion_operacion", ruta, nulo=True)
         if hecho is not None and hecho.tipo == RELACION_DE_NEGOCIOS and fecha is None:
             self.error(
@@ -473,9 +450,21 @@ class _Carga:
                 "Una operación de una relación de negocios necesita «fecha_ejecucion_operacion»",
                 _ruta(ruta, "fecha_ejecucion_operacion"),
             )
-        # AMBIGÜEDAD: en una operación ocasional, el modelo no dice si
-        # `fecha_ejecucion_operacion` debe coincidir con
-        # `hecho_inicial.fecha_ejecucion`. No se comprueba.
+        # Modelo, V-14: en una operación ocasional, si tiene valor, debe coincidir con
+        # `hecho_inicial.fecha_ejecucion`.
+        if (
+            hecho is not None
+            and hecho.tipo == OPERACION_OCASIONAL
+            and isinstance(fecha, date)
+            and isinstance(hecho.fecha_ejecucion, date)
+            and fecha != hecho.fecha_ejecucion
+        ):
+            self.error(
+                "ERR-08",
+                f"«fecha_ejecucion_operacion» ({fecha}) no coincide con la ejecución de la operación "
+                f"ocasional ({hecho.fecha_ejecucion})",
+                _ruta(ruta, "fecha_ejecucion_operacion"),
+            )
         return DocumentoOperacion(**comunes, fecha_ejecucion_operacion=fecha)
 
     def _comunicacion(self, obj, ruta, comunes):
@@ -486,9 +475,7 @@ class _Carga:
                 f"Falta el campo obligatorio «fecha_fin_vigencia» (obligatorio con «{subtipo}»)",
                 _ruta(ruta, "fecha_fin_vigencia"),
             )
-        # AMBIGÜEDAD: con otros subtipos `fecha_fin_vigencia` no es
-        # obligatoria, pero el modelo no dice si puede tener valor. Se admite:
-        # es un hecho que el cálculo simplemente no usa.
+        # Modelo, V-13: con otros subtipos, `fecha_fin_vigencia` se admite con valor.
         fin_vigencia = self._fecha(obj, "fecha_fin_vigencia", ruta, nulo=True)
         referencia = self._texto(obj, "examen_especial_id", ruta, nulo=True)
         return DocumentoComunicacionControlInterno(
@@ -525,9 +512,7 @@ class _Carga:
                 continue
             ruta = f"expediente.documentos[{i}].examen_especial_id"
             if doc.subtipo in SUBTIPOS and doc.subtipo != COMUNICACION_POR_INDICIO:
-                # AMBIGÜEDAD: §4.4 dice «Solo con `comunicacion_por_indicio`»,
-                # pero el §8 no da código para usarlo con otro subtipo. Se usa
-                # ERR-07, el error de `examen_especial_id`.
+                # Modelo, V-10: `examen_especial_id` con otro subtipo es ERR-07.
                 self.error(
                     "ERR-07",
                     f"«examen_especial_id» solo se admite con «{COMUNICACION_POR_INDICIO}», no con «{doc.subtipo}»",
@@ -546,9 +531,7 @@ class _Carga:
         """ERR-05."""
         if hecho is None or hecho.tipo is not None:
             return
-        # AMBIGÜEDAD: con la lista vacía, «solo contenga documentos
-        # `aplicacion_fondos`» se cumple. Se admite `tipo = null` sin
-        # documentos.
+        # Modelo, V-12: con `tipo = null` se admite la lista vacía.
         for doc in documentos:
             if doc.categoria != APLICACION_FONDOS:
                 self.error(
@@ -583,9 +566,8 @@ class _Carga:
             ruta = f"expediente.prorrogas_autoridad[{i}]"
             if not self._objeto(obj, ruta, ("autoridad", "fecha_requerimiento", "fecha_fin")):
                 continue
-            # AMBIGÜEDAD: el modelo no dice si `fecha_fin` puede ser anterior a
-            # `fecha_requerimiento`. No se comprueba: el recorte y la validez de
-            # la prórroga son del cálculo (especificación, D-11 y D-12).
+            # Modelo, V-15: no se comprueba el orden de las fechas de la prórroga; qué
+            # prórroga vale lo decide el cálculo (especificación, D-11 y D-12).
             prorrogas.append(
                 ProrrogaAutoridad(
                     self._texto(obj, "autoridad", ruta),

@@ -11,7 +11,7 @@ Siglas y fuentes (detalle y huellas en [`fuentes/FUENTES.md`](fuentes/FUENTES.md
 Convenciones:
 
 - Las citas van entre comillas «» y son literales.
-- **[Decisión propia]** marca lo que no sale de los textos, sino del diseño de este proyecto.
+- **[Decisión propia]** marca lo que no sale de los textos, sino del diseño de este proyecto. Las decisiones de validación están numeradas (V-1 a V-17) en el §8.2.
 - Los casos que la norma no resuelve se recogen en la sección [Casos que la norma no resuelve](#casos-que-la-norma-no-resuelve) (S-1 a S-15). El modelo no los decide.
 
 ---
@@ -97,7 +97,7 @@ Las fundaciones y asociaciones usan además la categoría `aplicacion_fondos` (v
 | `sujeto` | objeto | sí | Quién conserva. Ver §2.1. |
 | `expediente` | objeto | sí | Hecho que inicia el cómputo, documentos y circunstancias que pueden alterar el plazo. Ver §3 y §4. |
 
-No hay campo de régimen (§0, principio 2). Un JSON con `regimen` es un error de validación, para que una entrada de la versión 1 no se calcule como si ese campo sirviera de algo. **[Decisión propia]**
+No hay campo de régimen (§0, principio 2). Un JSON con `regimen` es un error de validación (`ERR-01`), para que una entrada de la versión 1 no se calcule como si ese campo sirviera de algo. **[Decisión propia]** Lo mismo vale para cualquier otro campo que el modelo no defina ([V-2](#82-decisiones-de-validación)).
 
 Todas las fechas son de día, sin hora ni zona horaria. **[Decisión propia]**: ninguna de las fuentes fija los plazos por horas.
 
@@ -204,7 +204,7 @@ Documentos o registros que acreditan las operaciones, sus intervinientes y las r
 
 | Campo | Tipo | Obligatorio | Descripción |
 |---|---|---|---|
-| `fecha_ejecucion_operacion` | fecha | sí, si `hecho_inicial.tipo = "relacion_de_negocios"` | Fecha de ejecución de la operación concreta dentro de la relación. Hace falta para la lectura literal del art. 25.1.b de la Ley ([S-3](#s-3)). |
+| `fecha_ejecucion_operacion` | fecha | sí, si `hecho_inicial.tipo = "relacion_de_negocios"` | Fecha de ejecución de la operación concreta dentro de la relación. Hace falta para la lectura literal del art. 25.1.b de la Ley ([S-3](#s-3)). En una operación ocasional es opcional y, si se indica, coincide con `hecho_inicial.fecha_ejecucion` (V-14). `null` equivale a omitirla (V-8). |
 
 ### 4.3. `examen_especial`
 
@@ -328,19 +328,45 @@ Todos los datos se validan igual con independencia del régimen (§0). Esta tabl
 
 ## 8. Validación
 
-Errores que rechazan la entrada. Ninguno depende del régimen.
+La validación no depende del régimen (§0, principio 3). Se recogen todos los errores de la entrada, no solo el primero, y si hay alguno la entrada se rechaza entera.
 
-1. Falta un campo obligatorio, un valor no es del tipo indicado o hay un campo `regimen` (§2).
-2. `hecho_inicial` no tiene la fecha que corresponde a su `tipo`, o tiene rellenas las de otro tipo (§3).
-3. `tipo = "negativa"` sin `objeto_negativa` (§3).
-4. `fecha_inicio` posterior a `fecha_terminacion` (§3).
-5. `tipo = null` en un expediente con documentos que no son `aplicacion_fondos` (§4.5).
-6. `aplicacion_fondos` con `sujeto.naturaleza = "sujeto_obligado"` (§4.5).
-7. `id` de documento repetido, o `examen_especial_id` que no existe o no es un `examen_especial` (§4, §4.4).
-8. `fecha_ejecucion_operacion` ausente en una operación de una relación de negocios (§4.2).
-9. Un hecho posterior a `fecha_referencia` (§5).
+### 8.1. Errores
 
-**[Decisión propia]**: en las fechas del examen especial solo se valida el formato, no el orden entre ellas (apertura ≤ cierre ≤ decisión ≤ comunicación). Un orden anómalo se puede deber a cómo registra la entidad sus expedientes, y el cálculo no depende de él.
+| Código | Error | Sección |
+|---|---|---|
+| `ERR-01` | Estructura o tipo: el JSON está mal formado o repite una clave en un mismo objeto; falta un campo obligatorio; un valor no es del tipo indicado; `version_modelo` no es `2`; hay un campo `regimen` o cualquier otro campo que el modelo no define. | §2, [V-2](#82-decisiones-de-validación), [V-3](#82-decisiones-de-validación) |
+| `ERR-02` | `hecho_inicial` no tiene la fecha que corresponde a su `tipo`, o tiene rellenos campos de otro tipo de hecho. | §3, V-5 a V-7 |
+| `ERR-03` | `tipo = "negativa"` sin `objeto_negativa`. | §3 |
+| `ERR-04` | `fecha_inicio` posterior a `fecha_terminacion`. | §3 |
+| `ERR-05` | `tipo = null` en un expediente con documentos que no son `aplicacion_fondos`. | §4.5 |
+| `ERR-06` | `aplicacion_fondos` con `sujeto.naturaleza = "sujeto_obligado"`. | §4.5 |
+| `ERR-07` | `id` de documento repetido, o `examen_especial_id` que no existe, no es un `examen_especial` o está en un subtipo que no es `comunicacion_por_indicio`. | §4, §4.4, V-10 |
+| `ERR-08` | `fecha_ejecucion_operacion` ausente o `null` en una operación de una relación de negocios, o distinta de `hecho_inicial.fecha_ejecucion` en una operación ocasional. | §4.2, V-8, V-14 |
+| `ERR-09` | Un hecho posterior a `fecha_referencia`. Un error por cada fecha. | §5 |
+
+### 8.2. Decisiones de validación
+
+Todas son **[Decisión propia]**. Cada una cambia el resultado de la validación: si una entrada se acepta o se rechaza, o con qué código.
+
+| Id | Decisión | Alternativa descartada | Motivo |
+|---|---|---|---|
+| V-1 | Códigos `ERR-01` a `ERR-09` (§8.1): n es el número que tenía cada error en la lista de la versión anterior de este documento. Son estables y no se reutilizan. | Códigos descriptivos (`ERR-TIPO-NULO`…). | Números cortos y estables, como en el proyecto `calculo-titularidad-real`. |
+| V-2 | Un campo desconocido es `ERR-01`, en cualquier objeto. También cuenta como desconocido el campo propio de otra categoría (por ejemplo, `fecha_apertura` en un documento de `diligencia_debida`). | Ignorarlo. | Un campo que el cálculo no lee pasaría como si sirviera de algo: una errata en un campo opcional o un campo de la versión 1 (`regimen`, `amlr_art3_3_n_o`, `prorroga_nacional_77_4`). |
+| V-3 | Son `ERR-01`: un JSON mal formado, una clave repetida en un mismo objeto y un `version_modelo` distinto de `2`. | Códigos propios; con la clave repetida, quedarse con el último valor, como hace un lector JSON habitual. | Son errores de estructura. Una clave repetida suele ser un error de edición, y quedarse con un valor lo taparía. |
+| V-4 | Los seis campos de `hecho_inicial` son obligatorios, con `null` cuando no aplican. | Poder omitir los que no aplican. | Un campo olvidado no se distingue de un `null` intencionado. |
+| V-5 | Con `tipo = null`, cualquier campo de `hecho_inicial` con valor es `ERR-02`. | `ERR-01`, o ignorarlo. | El §4.5 exige «todos los campos a `null`», y `ERR-02` es el error de los datos que no corresponden al tipo. |
+| V-6 | `fecha_inicio` con valor en un hecho que no es `relacion_de_negocios` es `ERR-02`. | Admitirla e ignorarla. | El §3 la define como «Inicio de la relación de negocios»: en otro tipo es una fecha de otro hecho. |
+| V-7 | `objeto_negativa` con valor en un hecho que no es `negativa` es `ERR-02`. | Admitirlo e ignorarlo. | Igual que V-6. |
+| V-8 | `fecha_ejecucion_operacion` a `null` equivale a omitirla: dentro de una relación de negocios los dos casos son `ERR-08`; en otro caso se admiten. | Tratar `null` como `ERR-01`, porque el tipo es «fecha». | Los dos significan que no hay dato. |
+| V-9 | `descripcion` a `null` equivale a omitirla. | `ERR-01`. | Es texto libre que el cálculo no usa. |
+| V-10 | `examen_especial_id` con valor en un subtipo distinto de `comunicacion_por_indicio` es `ERR-07`. | `ERR-01`, o ignorarlo. | El §4.4 lo admite «Solo con `comunicacion_por_indicio`», y `ERR-07` es el error de ese campo. |
+| V-11 | Se admiten textos vacíos, también en los `id`. | Rechazarlos. | Ningún texto interviene en el cálculo salvo como identificador, y un `id` vacío sigue pudiendo ser único. |
+| V-12 | Se admite una lista de documentos vacía, también con `tipo = null`. | Rechazarla. | No hay nada que calcular, pero la entrada no es incoherente; con `tipo = null`, la condición del §4.5 se cumple. |
+| V-13 | Se admite `fecha_fin_vigencia` con valor en subtipos que no la exigen. | Rechazarla. | Es un hecho que el cálculo no usa en esos subtipos. |
+| V-14 | En una operación ocasional, `fecha_ejecucion_operacion` puede omitirse, pero si tiene valor debe coincidir con `hecho_inicial.fecha_ejecucion`; si no, es `ERR-08`. | Admitir la diferencia sin comprobarla. | Es la misma operación. La especificación (§2.1) da por hecho que las dos fechas coinciden y por eso OP-1 y OP-2 dan lo mismo; con fechas distintas, OP-1 daría un resultado que depende de un dato contradictorio. |
+| V-15 | No se comprueba que `fecha_fin` de una prórroga sea posterior a `fecha_requerimiento`. | Rechazar la prórroga. | Qué prórroga vale y hasta cuándo lo decide el cálculo (especificación, D-11 y D-12). |
+| V-16 | En las fechas del examen especial solo se valida el formato, no el orden entre ellas (apertura ≤ cierre ≤ decisión ≤ comunicación). | Exigir ese orden. | Un orden anómalo se puede deber a cómo registra la entidad sus expedientes, y el cálculo no depende de él. |
+| V-17 | Un dato presente pero mal formado solo da `ERR-01`: las comprobaciones que dependen de él no se hacen. Si un documento no tiene una `categoria` válida, solo se comprueban sus campos comunes. | Hacer todas las comprobaciones y dar también los errores derivados. | Un error derivado desaparece al corregir el primero y oculta cuál es el dato que falla. |
 
 ---
 

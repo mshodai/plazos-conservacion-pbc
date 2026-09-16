@@ -416,3 +416,63 @@ def test_se_recogen_todos_los_errores_ordenados():
     datos["expediente"]["hecho_inicial"]["fecha_inicio"] = "2021-01-01"
     datos["expediente"]["documentos"] += [diligencia("D1"), fondos("F1")]
     assert codigos(cargar_dict(datos)) == ["ERR-01", "ERR-04", "ERR-06", "ERR-07"]
+
+
+# --- Decisiones de validación del §8.2 ---------------------------------------
+
+
+def test_v14_operacion_ocasional_con_fecha_distinta_es_err08():
+    datos = base()
+    datos["expediente"]["hecho_inicial"] = hecho("operacion_ocasional", fecha_ejecucion="2016-01-01")
+    datos["expediente"]["documentos"] = [operacion("O1", fecha_ejecucion_operacion="2016-01-02")]
+    assert rutas(cargar_dict(datos)) == {("ERR-08", "expediente.documentos[0].fecha_ejecucion_operacion")}
+
+
+def test_v14_operacion_ocasional_con_la_misma_fecha_es_valida():
+    datos = base()
+    datos["expediente"]["hecho_inicial"] = hecho("operacion_ocasional", fecha_ejecucion="2016-01-01")
+    datos["expediente"]["documentos"] = [operacion("O1", fecha_ejecucion_operacion="2016-01-01")]
+    assert cargar_dict(datos).valida
+
+
+def test_v11_texto_vacio():
+    datos = base()
+    datos["expediente"]["id"] = ""
+    datos["expediente"]["documentos"][0]["id"] = ""
+    assert cargar_dict(datos).valida
+
+
+def test_v12_lista_de_documentos_vacia():
+    datos = base()
+    datos["expediente"]["documentos"] = []
+    assert cargar_dict(datos).valida
+    datos["sujeto"]["naturaleza"] = "fundacion"
+    datos["expediente"]["hecho_inicial"] = hecho(None)
+    assert cargar_dict(datos).valida
+
+
+def test_v13_fin_de_vigencia_en_otro_subtipo():
+    datos = base()
+    datos["expediente"]["documentos"].append(comunicacion("C1", "otro", fecha_fin_vigencia="2019-01-01"))
+    assert cargar_dict(datos).valida
+
+
+def test_v15_prorroga_con_fin_anterior_al_requerimiento():
+    datos = base()
+    datos["expediente"]["prorrogas_autoridad"] = [
+        {"autoridad": "SEPBLAC", "fecha_requerimiento": "2029-11-01", "fecha_fin": "2029-01-01"}
+    ]
+    assert cargar_dict(datos).valida
+
+
+def test_v16_orden_de_fechas_del_examen():
+    datos = base()
+    datos["expediente"]["documentos"].append(examen("X1", fecha_cierre="2017-01-01"))
+    assert cargar_dict(datos).valida
+
+
+def test_v17_categoria_no_valida_solo_comprueba_comunes():
+    datos = base()
+    datos["expediente"]["documentos"][0]["categoria"] = "otra"
+    datos["expediente"]["documentos"][0]["campo_raro"] = 1
+    assert rutas(cargar_dict(datos)) == {("ERR-01", "expediente.documentos[0].categoria")}

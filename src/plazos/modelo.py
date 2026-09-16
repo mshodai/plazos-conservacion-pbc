@@ -46,17 +46,19 @@ SUBTIPOS = (
     "otro",
 )
 
-# §8. El modelo numera los errores del 1 al 9 pero no les da código.
-# AMBIGÜEDAD: se usa ERR-0n para el error n de la lista del §8.
+# Modelo, §8.1 (V-1).
 ERRORES = {
-    "ERR-01": "Falta un campo obligatorio, un valor no es del tipo indicado o hay un campo `regimen`",
-    "ERR-02": "`hecho_inicial` no tiene la fecha que corresponde a su `tipo`, o tiene rellenas las de otro tipo",
+    "ERR-01": "JSON mal formado o con claves repetidas, campo obligatorio ausente, valor de tipo no válido, "
+    "`version_modelo` distinto de 2, o campo `regimen` u otro desconocido",
+    "ERR-02": "`hecho_inicial` no tiene la fecha que corresponde a su `tipo`, o tiene rellenos campos de otro tipo de hecho",
     "ERR-03": "`tipo = \"negativa\"` sin `objeto_negativa`",
     "ERR-04": "`fecha_inicio` posterior a `fecha_terminacion`",
     "ERR-05": "`tipo = null` en un expediente con documentos que no son `aplicacion_fondos`",
     "ERR-06": "`aplicacion_fondos` con `sujeto.naturaleza = \"sujeto_obligado\"`",
-    "ERR-07": "`id` de documento repetido, o `examen_especial_id` que no existe o no es un `examen_especial`",
-    "ERR-08": "`fecha_ejecucion_operacion` ausente en una operación de una relación de negocios",
+    "ERR-07": "`id` de documento repetido, o `examen_especial_id` que no existe, no es un `examen_especial` "
+    "o está en un subtipo que no es `comunicacion_por_indicio`",
+    "ERR-08": "`fecha_ejecucion_operacion` ausente o null en una operación de una relación de negocios, "
+    "o distinta de `hecho_inicial.fecha_ejecucion` en una operación ocasional",
     "ERR-09": "Un hecho posterior a `fecha_referencia`",
 }
 
