@@ -8,9 +8,9 @@ cosas que el cálculo no da por sí solo:
 - la **comparación**: qué regímenes dan estados distintos en la fecha de
   referencia y en qué periodos de la línea temporal difieren.
 
-`texto` y `como_json` lo presentan. La especificación no define el formato de
-la salida (§1.4 solo dice qué contiene); las decisiones de formato de este
-módulo son de implementación y se comentan donde se toman.
+`texto` y `como_json` lo presentan, según el §9 de la especificación. Las
+decisiones de la especificación se citan como «D-n»; el resto de comentarios
+son de formato.
 """
 
 import json
@@ -42,13 +42,12 @@ ADVERTENCIA = (
     "un dato, el cálculo da todas las lecturas y no elige; las decisiones propias se citan como D-n."
 )
 
-# La línea temporal proyecta hacia atrás y hacia delante con los hechos de la
-# entrada tal como están: no sabe cuándo se conoció cada hecho ni si habrá
-# otros (una prórroga nueva, la terminación de una relación viva).
+# D-25: la línea temporal es una proyección de los hechos conocidos, no una predicción.
 NOTA_LINEA_TEMPORAL = (
-    "La línea temporal aplica los hechos de la entrada a todas las fechas: no tiene en cuenta "
-    "cuándo se conoció cada hecho ni hechos futuros, como una prórroga nueva o la terminación "
-    "de una relación que sigue viva."
+    "La línea temporal es una proyección de los hechos que constan hoy en la entrada, no una "
+    "predicción: aplica esos hechos a todas las fechas, sin tener en cuenta cuándo se conoció "
+    "cada uno ni hechos futuros, como una prórroga nueva o la terminación de una relación que "
+    "sigue viva. Si cambia un hecho, cambia la línea temporal."
 )
 
 
@@ -164,7 +163,7 @@ def _fechas_de(lecturas) -> set[date]:
 
 
 def fechas_de_cambio(entrada: Entrada, doc, a: date) -> list[date]:
-    """Todas las fechas en que puede cambiar el estado del documento en algún régimen.
+    """Todas las fechas en que puede cambiar el estado del documento en algún régimen (§9.2).
 
     Son las fechas de las lecturas (inicio, restricción y el día siguiente a
     cada fin) y las fijas de la transición: A, A + 5 años + 1 (T-3) y las del
@@ -187,7 +186,8 @@ def fechas_de_cambio(entrada: Entrada, doc, a: date) -> list[date]:
 
 
 def linea_temporal(entrada: Entrada, doc, regimen: str, fechas: list[date]) -> tuple[Tramo, ...]:
-    """Los tramos de estado del documento en un régimen, del pasado al futuro.
+    """Los tramos de estado del documento en un régimen, del pasado al futuro
+    (D-25). Son los del estado del régimen, no los de cada lectura (D-26).
 
     `fechas` son las de `fechas_de_cambio`: entre dos seguidas el estado no cambia.
     """

@@ -61,6 +61,7 @@ def main(argv=None) -> int:
 def codigo_de_salida(inf) -> int:
     if not inf.valida:
         return 2
+    # §9.3. D-27: un `indeterminado` da 1 aunque los seis regímenes coincidan.
     if any(doc.estados_distintos or doc.hay_indeterminado for doc in inf.documentos):
         return 1
     return 0

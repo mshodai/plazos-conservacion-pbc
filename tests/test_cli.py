@@ -51,7 +51,7 @@ def test_difieren_devuelve_1(tmp_path, capsys):
     assert "La Ley y el AMLR dan estados distintos" in capsys.readouterr().out
 
 
-def test_indeterminado_devuelve_1(tmp_path):
+def test_d27_indeterminado_devuelve_1(tmp_path):
     """Antes de A los seis regímenes podrían coincidir en «indeterminado»: también es 1."""
     doc = {"id": "O", "categoria": "operaciones", "fecha_documento": "2014-04-01", "fecha_ejecucion_operacion": "2014-04-01"}
     entrada = datos("2025-01-01", relacion(None, "2012-01-01"), [doc])

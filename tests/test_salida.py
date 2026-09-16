@@ -164,3 +164,9 @@ def test_texto_con_errores():
     salida = texto(informe(cargar('{"regimen": "amlr"}')))
     assert salida.startswith("La entrada no es válida")
     assert "ERR-01  regimen:" in salida
+
+
+def test_d25_la_nota_dice_que_es_una_proyeccion():
+    salida = texto(informe_ejemplo1())
+    assert "proyección de los hechos que constan hoy en la entrada, no una predicción" in salida
+    assert "no una predicción" in como_dict(informe_ejemplo1())["nota_linea_temporal"]

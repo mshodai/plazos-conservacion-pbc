@@ -7,7 +7,7 @@ Siglas y fuentes: las de [`modelo-datos.md`](modelo-datos.md) (detalle y huellas
 Convenciones:
 
 - Las citas van entre comillas «» y son literales.
-- **[D-n]** marca una decisión de este proyecto que no sale de los textos. Todas están numeradas y reunidas en el [§9](#9-índice-de-decisiones). Los números son estables: una decisión retirada conserva su número y no se reutiliza.
+- **[D-n]** marca una decisión de este proyecto que no sale de los textos. Todas están numeradas y reunidas en el [§10](#10-índice-de-decisiones). Los números son estables: una decisión retirada conserva su número y no se reutiliza.
 - **Lectura** es una interpretación posible de un texto que no se resuelve. Cuando hay varias, el cálculo las devuelve todas con su resultado (§1.4) y no elige.
 
 ---
@@ -478,7 +478,62 @@ Aquí la Ley obliga a eliminar y el AMLR permite conservar.
 
 ---
 
-## 9. Índice de decisiones
+## 9. Salida
+
+La línea de órdenes es `plazos-conservacion FICHERO [--json]`. Lee la entrada, la valida, calcula los seis regímenes y emite un informe en texto o, con `--json`, en JSON. El contenido es el mismo en los dos formatos.
+
+### 9.1. Contenido
+
+Para cada documento:
+
+- **Estado en la fecha de referencia** en los seis regímenes (§1.4).
+- **Dónde difieren**, que es el objeto del informe:
+  - si la Ley y el AMLR dan estados distintos;
+  - si T-1 a T-4 no coinciden ([D-21]);
+  - qué regímenes dan cada estado;
+  - los periodos de la línea temporal en que los seis regímenes no coinciden. Los periodos anteriores a A se señalan, porque en ellos `amlr` es solo comparativo ([D-20]).
+- **Línea temporal** de cada régimen: los tramos de estado con la fecha en que empieza cada uno. En texto, una línea por régimen, con una marca en el tramo que contiene la fecha de referencia.
+- **Lecturas** de cada régimen, con sus fechas y citas (§1.4). En texto, si un régimen tiene exactamente las mismas lecturas que otro ya mostrado (T-n antes de A son la Ley; T-2 desde A es el AMLR), se remite a él en lugar de repetirlas.
+- **Avisos** de cada régimen.
+
+El informe empieza con la advertencia de que es un cálculo bajo las lecturas que declara esta especificación, no una determinación jurídica.
+
+### 9.2. Línea temporal
+
+**[D-25] La línea temporal es una proyección de los hechos conocidos hoy, no una predicción.** Se calcula aplicando los hechos de la entrada, tal como están, a todas las fechas, anteriores y posteriores a la de referencia:
+
+- No sabe cuándo se conoció cada hecho. Una prórroga requerida en 2032 aparece también en los tramos anteriores a esa fecha.
+- No prevé hechos futuros. Una relación que sigue viva se muestra en `plazo_no_iniciado` para siempre, porque todavía no ha terminado. Una prórroga que la autoridad aún no ha requerido no aparece.
+- Si cambia un hecho (termina la relación, llega un requerimiento, se cierra un examen especial), la línea temporal cambia, y la calculada antes deja de valer.
+
+Las fechas de la línea dicen cuándo cambiaría el estado si los hechos siguieran siendo los de la entrada. No dicen cuándo va a cambiar. El informe lo advierte en una nota.
+
+Cómo se calcula: se reúnen todas las fechas en que puede cambiar el estado en algún régimen y se evalúa el cálculo en cada una. Esas fechas son:
+
+- las de las lecturas: inicio, inicio del acceso restringido y el día siguiente a cada vencimiento, fin de prórroga y fin de conservación facultativa ([D-2]);
+- las fijas de la transición: A, A + 5 años + 1 día (T-3), el 2027-07-10 y el día siguiente al fin de PA-1 y PA-2 (art. 77.4).
+
+Como las lecturas de un régimen pueden cambiar según la fecha en que se evalúa (T-n pasa de la Ley al AMLR en A), se repite con las fechas nuevas hasta que no aparece ninguna. Entre dos fechas seguidas el estado no cambia.
+
+**[D-26] La línea temporal muestra el estado de cada régimen, no el de cada lectura.** Los tramos son los del `estado` del régimen (§1.4), que puede ser `indeterminado`. Cuándo cambia cada lectura se ve en sus fechas, que el informe da junto a las lecturas. La alternativa, una línea por lectura y régimen, multiplicaría las líneas (cinco lecturas de examen especial en seis regímenes) sin responder mejor a la pregunta del informe: cuándo cambia el estado del documento bajo cada régimen.
+
+### 9.3. Códigos de salida
+
+| Código | Cuándo |
+|---|---|
+| 0 | La entrada es válida y, en la fecha de referencia, los seis regímenes dan el mismo estado en todos los documentos, sin ningún `indeterminado`. También si el expediente no tiene documentos. |
+| 1 | La entrada es válida y en algún documento los regímenes dan estados distintos, o alguno da `indeterminado` ([D-27]). |
+| 2 | El fichero no existe, no se puede leer o no está en UTF-8; la entrada no es válida (modelo, §8); o la orden se usa mal. |
+
+Con una entrada no válida también se emite el informe, que lista los errores con su código y su ruta, en texto o en JSON. Los errores de lectura del fichero y de uso van a la salida de error.
+
+El código solo mira la fecha de referencia, no los periodos de la línea temporal: un documento en el que los regímenes coinciden hoy pero difieren más adelante da 0.
+
+**[D-27] Un `indeterminado` da código 1 aunque los seis regímenes coincidan.** Por ejemplo, antes de A, con una operación dentro de una relación viva, los seis dan `indeterminado` (ejemplo 4). Coinciden, pero el estado depende de una lectura que la norma no resuelve, y el código 0 lo taparía. La alternativa, dar 0 siempre que coincidan, haría que el código solo reflejara diferencias entre regímenes y no dentro de uno.
+
+---
+
+## 10. Índice de decisiones
 
 | Id | Decisión | Sección |
 |---|---|---|
@@ -506,3 +561,6 @@ Aquí la Ley obliga a eliminar y el AMLR permite conservar.
 | D-22 | «Tiene hecho inicial» es `tipo` distinto de `null`; con H `null`, las lecturas que usan H dan `plazo_no_iniciado`. | §2.1 |
 | D-23 | T-3 vencido por la Ley da `eliminacion_exigida`; vencido por A + 5 años sigue el AMLR (prórroga, art. 77.4, `supresion_exigida`). | §4.2 |
 | D-24 | T-4 con F ≥ A: el estado de la Ley mientras conserve; después, el del AMLR si conserva; si los dos han vencido, el de la norma que acaba más tarde. | §4.2 |
+| D-25 | La línea temporal es una proyección de los hechos conocidos hoy, no una predicción. | §9.2 |
+| D-26 | La línea temporal muestra el estado de cada régimen, no el de cada lectura. | §9.2 |
+| D-27 | Un `indeterminado` da código de salida 1 aunque los seis regímenes coincidan. | §9.3 |
