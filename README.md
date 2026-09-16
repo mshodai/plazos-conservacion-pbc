@@ -150,6 +150,10 @@ Los documentos se descargaron el 15 de septiembre de 2026. Las URL y las huellas
 - **10 de julio de 2029:** aplicación del AMLR a los agentes de fútbol y a los clubes de fútbol profesional (art. 90).
 - **10 de julio de 2032:** fin de la conservación facultativa para documentos relacionados con procedimientos judiciales pendientes el 10 de julio de 2027 (art. 77.4), o **10 de julio de 2037** si el Estado permite o exige el período adicional.
 
+## Licencia
+
+MIT; el texto completo está en [LICENSE](LICENSE). Cubre el código y la documentación de este repositorio, no los textos legales de `docs/fuentes/`, que no se incluyen.
+
 ---
 
 Es una implementación de referencia, probada sobre datos sintéticos. No es software de cumplimiento normativo y no constituye asesoramiento jurídico.
