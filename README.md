@@ -1,5 +1,7 @@
 # plazos-conservacion-pbc
 
+Sitio: https://mshodai.github.io/plazos-conservacion-pbc/, por qué la Ley 10/2010 y su Reglamento dan respuestas opuestas sobre cuándo empieza a contar el plazo de una operación.
+
 Un sujeto obligado por la normativa de prevención del blanqueo de capitales tiene que conservar la documentación de cada cliente el tiempo que marca la ley, ni menos ni más: conservar de menos es una infracción, y conservar datos personales cuando la norma manda eliminarlos también incumple.
 
 El escenario. Una entidad terminó la relación con un cliente el 31 de octubre de 2021. En junio de 2028 alguien pregunta si ya se puede borrar la documentación de diligencia debida de ese cliente. Con la Ley 10/2010, la respuesta es que no: se conserva diez años, hasta el 31 de octubre de 2031, pero desde el quinto año solo pueden consultarla los órganos de control interno y, en su caso, los encargados de la defensa legal. Con el Reglamento (UE) 2024/1624 (AMLR), aplicable desde el 10 de julio de 2027, el plazo es de cinco años, que vencieron el 31 de octubre de 2026, y los datos personales hay que suprimirlos. Y ningún texto dice cuál de los dos manda para un expediente cuyo plazo empezó con la Ley y seguía en curso cuando empezó a aplicarse el AMLR.
@@ -149,6 +151,11 @@ Los documentos se descargaron el 15 de septiembre de 2026. Las URL y las huellas
 - **10 de julio de 2027:** el AMLR «será aplicable» (art. 90). Ningún texto dice qué pasa con los plazos que empezaron con la Ley y siguen en curso; de ahí T-1 a T-4.
 - **10 de julio de 2029:** aplicación del AMLR a los agentes de fútbol y a los clubes de fútbol profesional (art. 90).
 - **10 de julio de 2032:** fin de la conservación facultativa para documentos relacionados con procedimientos judiciales pendientes el 10 de julio de 2027 (art. 77.4), o **10 de julio de 2037** si el Estado permite o exige el período adicional.
+
+## Otros repositorios del proyecto
+
+- [validador-cadena-verifactu](https://github.com/mshodai/validador-cadena-verifactu): comprueba la integridad de una cadena de registros de facturación de Verifactu.
+- [calculo-titularidad-real](https://github.com/mshodai/calculo-titularidad-real): calcula la titularidad real bajo la Ley 10/2010 y el AMLR.
 
 ## Licencia
 
