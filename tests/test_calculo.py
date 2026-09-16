@@ -76,7 +76,7 @@ def test_el_regimen_es_un_parametro():
 # --- §2: Ley -----------------------------------------------------------------
 
 
-def test_relacion_viva_plazo_no_iniciado_sin_restriccion():
+def test_d22_relacion_viva_plazo_no_iniciado_sin_restriccion():
     ent = entrada("2040-01-01", relacion(None, "2010-01-01"), [diligencia("D", "2010-01-01")])
     (lectura,) = calcular(ent).documento("D").regimenes[LEY].lecturas
     assert (lectura.estado, lectura.acceso_restringido_desde) == (PLAZO_NO_INICIADO, None)
@@ -192,7 +192,7 @@ def test_futbol_aplica_desde_2029():
     assert doc.transicion_coincide
 
 
-def test_t3_vence_por_el_amlr_con_77_4():
+def test_d23_t3_vence_por_el_amlr_con_77_4():
     """F = 2026-01-01 < A: la Ley vencería en 2036, pero A + 5 años es 2032-07-10."""
     ent = entrada("2032-07-11", relacion("2026-01-01"), [diligencia("D", "2025-01-01")], pendiente=True)
     t3 = por_id(calcular(ent).documento("D").regimenes[T3])
@@ -216,7 +216,7 @@ def test_t1_mezcla_ley_y_amlr_por_lectura():
     assert (t1["EE-5"].norma, t1["EE-5"].estado) == ("amlr", SUPRESION_EXIGIDA)
 
 
-def test_t4_la_prorroga_del_amlr_supera_a_la_ley():
+def test_d24_t4_la_prorroga_del_amlr_supera_a_la_ley():
     """EE-1 abre el 2027-08-01 (≥ A): la Ley vence el 2037-08-01; el AMLR, con
     prórroga, conserva hasta el 2038-01-01."""
     ent = entrada(
@@ -228,3 +228,25 @@ def test_t4_la_prorroga_del_amlr_supera_a_la_ley():
     t4 = por_id(calcular(ent).documento("X").regimenes[T4])
     assert t4["EE-1"].estado == CONSERVACION_PRORROGADA
     assert t4["EE-5"].estado == ACCESO_RESTRINGIDO  # la Ley aún conserva: 2038-01-01
+
+
+def test_d23_t3_empate_vence_por_la_ley():
+    """F + 10 años = A + 5 años = 2032-07-10: vence por la Ley."""
+    ent = entrada("2032-07-11", relacion("2022-07-10"), [diligencia("D", "2022-01-01")], pendiente=True)
+    (t3,) = calcular(ent).documento("D").regimenes[T3].lecturas
+    assert (t3.norma, t3.vencimiento, t3.estado) == ("ley", d("2032-07-10"), ELIMINACION_EXIGIDA)
+
+
+def test_d24_t4_los_dos_vencidos():
+    """El 2038-01-02 han vencido la Ley y el AMLR con prórroga (2038-01-01).
+    EE-1: la Ley acabó antes (2037-08-01), así que manda el AMLR. EE-5: acaban
+    el mismo día, así que manda la Ley."""
+    ent = entrada(
+        "2038-01-02",
+        relacion("2028-01-01"),
+        [examen("X", "2027-08-01", "2027-09-01", "2027-09-01")],
+        prorrogas=[("SEPBLAC", "2032-06-01", "2038-01-01")],
+    )
+    t4 = por_id(calcular(ent).documento("X").regimenes[T4])
+    assert (t4["EE-1"].norma, t4["EE-1"].estado) == ("amlr", SUPRESION_EXIGIDA)
+    assert (t4["EE-5"].norma, t4["EE-5"].estado) == ("ley", ELIMINACION_EXIGIDA)

@@ -108,7 +108,9 @@ RD, art. 29.2: «Los sujetos obligados conservarán durante un periodo de diez a
 |---|---|---|
 | CI-1 | `fecha_documento` | Siempre. |
 | CI-2 | `fecha_fin_vigencia` (`null` = plazo no iniciado) | Solo con `politicas_procedimientos` y `analisis_riesgo`. |
-| CI-3 | H | Solo si el expediente tiene hecho inicial. |
+| CI-3 | H (`null` = plazo no iniciado) | Solo si el expediente tiene hecho inicial ([D-22]). |
+
+**[D-22]** «El expediente tiene hecho inicial» significa que `hecho_inicial.tipo` no es `null`. Si lo tiene pero H todavía es `null` (una relación viva), las lecturas que usan H no desaparecen: dan `plazo_no_iniciado`. Vale para CI-3, para EE-5 y para SR-3 (§7.3), y para el §3.1 y [D-8]. La alternativa, exigir que H sea conocida, haría que CI-3 y SR-3 aparecieran el día en que termina la relación, y el estado del documento cambiaría sin que cambie nada en él. Con `tipo = null` no puede haber documentos de `comunicacion_control_interno` (modelo, `ERR-05`), así que CI-3 aplica siempre en entradas válidas.
 
 #### `aplicacion_fondos`: 10 años sin inicio declarado (S-7)
 
@@ -144,7 +146,7 @@ Las categorías con lecturas propias (EE-n, CI-n, AF-n) sustituyen la lectura EE
 El acceso restringido y el plazo de diez años pueden contarse desde fechas distintas:
 
 - **R siempre se cuenta desde H.** El art. 25.1 lo cuenta «desde la terminación de la relación de negocios o la ejecución de la operación ocasional», no desde el documento.
-- **R solo existe si el expediente tiene hecho inicial.** **[D-8]**: sin hecho inicial (por ejemplo, una fundación con solo `aplicacion_fondos`), el documento nunca pasa a `acceso_restringido`. Ver §6.3.
+- **R solo existe si el expediente tiene hecho inicial.** **[D-8]**: sin hecho inicial (por ejemplo, una fundación con solo `aplicacion_fondos`), el documento nunca pasa a `acceso_restringido`. Ver §6.3. Con una relación viva sí hay hecho inicial ([D-22]), pero R todavía no existe porque H es `null`: aparece cuando la relación termina.
 - **Si R > V** (el documento vence antes de que empiece la restricción, como en OP-1), el documento pasa de `en_conservacion` a `eliminacion_exigida` sin estar nunca restringido.
 - **Si la fecha de inicio es posterior a R** (por ejemplo, EE-2 con un examen cerrado más de cinco años después de H), el documento está en `acceso_restringido` desde su fecha de inicio. **[D-9]**: la restricción se aplica a «la documentación conservada» sin excepciones por fecha, así que también cubre la documentación posterior a R.
 
@@ -220,7 +222,18 @@ En lo que sigue, **A** es la fecha de aplicación: 2027-07-10, o 2029-07-10 si `
 Notas:
 
 - **T-3** limita el plazo al vencimiento de la Ley para no resucitar documentos que la Ley ya mandaba eliminar. Sin ese límite, un documento con H = 2018-01-01 (eliminación exigida por la Ley desde 2028-01-02) volvería a tener que conservarse hasta 2032-07-10. Es parte de cómo se construye la lectura, no una decisión sobre cuál aplicar.
+- **[D-23] T-3 después de su vencimiento.** El estado depende de qué fecha llega antes:
+  - si el vencimiento de la Ley (F + 10 años) es anterior o igual a A + 5 años, vence por la Ley: después, `eliminacion_exigida`, sin prórroga ni art. 77.4, que la Ley no tiene;
+  - si A + 5 años es anterior, vence por el AMLR: después, la prórroga de la autoridad con V = A + 5 años ([D-11], [D-12]), el art. 77.4 ([D-13]) y `supresion_exigida`.
+
+  Motivo: lo que ocurre al vencer un plazo lo dice la norma que lo ha fijado. La alternativa, aplicar siempre el AMLR desde A, daría `supresion_exigida` y la prórroga del art. 77.3 a documentos cuyo plazo ha terminado por la Ley.
 - **T-4** no es solo transitoria: afecta también a los hechos posteriores a A. Se incluye aquí porque es la que más cambia el resultado desde A.
+- **[D-24] T-4 con F ≥ A (o sin F), en categorías con regla en el AMLR.** «El mayor de los dos plazos» se aplica así, en la fecha de referencia:
+  - mientras la lectura de la Ley no esté en `eliminacion_exigida`, su estado (incluidos `plazo_no_iniciado` y `acceso_restringido`, porque la restricción «se mantiene»);
+  - si la Ley ya exige eliminar y el AMLR todavía conserva el documento (`plazo_no_iniciado`, `en_conservacion`, `conservacion_prorrogada` o `conservacion_facultativa_77_4`), el estado del AMLR;
+  - si los dos han vencido, el de la norma cuyo plazo acaba más tarde: la Ley en su vencimiento; el AMLR en el último de V, el fin de la prórroga y el fin de la conservación facultativa. Si acaban el mismo día, la Ley.
+
+  Motivo: el documento se conserva mientras alguna de las dos normas lo exija o lo permita, y el estado dice por cuál. La alternativa, comparar solo los vencimientos sin prórroga ni art. 77.4, haría que T-4 exigiera eliminar un documento que el AMLR permite conservar.
 - **Relación viva el día A** (`fecha_terminacion` nula o posterior a A): el plazo no había empezado con la Ley. T-1, T-2 y T-3 coinciden en aplicar el AMLR; T-4 aplica 10 años.
 - **Categorías sin inicio declarado** (`examen_especial`, `comunicacion_control_interno` y `aplicacion_fondos` con la Ley): la comparación con A se hace con la fecha de inicio de cada lectura de la categoría. El resultado es la combinación de ambas, por ejemplo `T-1 × EE-2`.
 - **Categorías sin regla en el AMLR:** con T-2 y T-3 quedan en `sin_regla` desde A. Con T-1, siguen la Ley si la fecha de inicio de la lectura es anterior a A, y quedan en `sin_regla` si no. Con T-4 siguen la Ley. Ver §7.
@@ -325,7 +338,7 @@ Las lecturas posibles se devuelven en `lecturas`:
 |---|---|---|
 | SR-1 | No hay obligación del AMLR y lo decide la entidad. | `sin_regla` |
 | SR-2 | Siguen vigentes el RD 29.2 o el RD 42.3.d como Derecho nacional (análoga a T-4). | Cálculo del §2 con sus lecturas CI-n o AF-n. |
-| SR-3 | Se aplica por extensión el art. 77.3. | No calculable: el art. 77.3 cuenta desde un hecho inicial que estos documentos no suelen tener. Solo se calcula si el expediente tiene hecho inicial (H + 5 años). |
+| SR-3 | Se aplica por extensión el art. 77.3. | Solo se calcula si el expediente tiene hecho inicial (H + 5 años); si H es `null`, `plazo_no_iniciado` ([D-22]). Sin hecho inicial no hay lectura SR-3: el art. 77.3 cuenta desde un hecho que estos documentos no tienen. |
 
 ---
 
@@ -421,7 +434,7 @@ Relación terminada el **2023-09-30**. Examen especial: apertura 2019-02-01, cie
 
 Política aprobada el **2020-01-01** y sustituida el **2026-01-01**, registrada en el expediente de una relación de negocios que sigue viva. `fecha_referencia = 2028-01-01`.
 
-Un documento de esta categoría no puede estar en un expediente sin hecho inicial (`tipo = null` solo admite `aplicacion_fondos`: modelo, `ERR-05`), así que CI-3 siempre aplica. «Tiene hecho inicial» se lee como `tipo` distinto de `null`: con la relación viva, H es `null` y CI-3 da `plazo_no_iniciado`, igual que EE-5.
+Un documento de esta categoría no puede estar en un expediente sin hecho inicial (`tipo = null` solo admite `aplicacion_fondos`: modelo, `ERR-05`), así que CI-3 siempre aplica. Con la relación viva, H es `null` y CI-3 da `plazo_no_iniciado`, igual que EE-5 ([D-22]).
 
 - **Ley:**
   - CI-1: V = 2030-01-01, `en_conservacion`.
@@ -490,3 +503,6 @@ Aquí la Ley obliga a eliminar y el AMLR permite conservar.
 | D-19 | Una comunicación por indicio sigue el AMLR 77.1.b, aunque esté en `comunicacion_control_interno`. | §3.1, §7.1 |
 | D-20 | El AMLR se calcula también antes de A, con aviso. | §4.3 |
 | D-21 | Si T-1 a T-4 no coinciden, el resultado lo señala expresamente. | §1.4 |
+| D-22 | «Tiene hecho inicial» es `tipo` distinto de `null`; con H `null`, las lecturas que usan H dan `plazo_no_iniciado`. | §2.1 |
+| D-23 | T-3 vencido por la Ley da `eliminacion_exigida`; vencido por A + 5 años sigue el AMLR (prórroga, art. 77.4, `supresion_exigida`). | §4.2 |
+| D-24 | T-4 con F ≥ A: el estado de la Ley mientras conserve; después, el del AMLR si conserva; si los dos han vencido, el de la norma que acaba más tarde. | §4.2 |

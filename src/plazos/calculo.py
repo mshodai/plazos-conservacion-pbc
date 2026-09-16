@@ -280,13 +280,8 @@ class _Calculo:
             inicios = [_Inicio("CI-1", doc.fecha_documento, "RD 29.2")]
             if doc.subtipo in SUBTIPOS_CON_VIGENCIA:
                 inicios.append(_Inicio("CI-2", doc.fecha_fin_vigencia, "RD 29.2"))
-            # AMBIGÜEDAD: CI-3 aplica «Solo si el expediente tiene hecho
-            # inicial». Se lee como `tipo` distinto de null; con una relación
-            # viva, H es null y CI-3 da `plazo_no_iniciado`, como EE-5. La otra
-            # lectura (exigir H conocida) haría que CI-3 apareciera al terminar
-            # la relación. El ejemplo 6 se ha corregido en consecuencia. Con
-            # `tipo = null` no puede haber documentos de esta categoría
-            # (modelo, ERR-05).
+            # D-22: «tiene hecho inicial» es `tipo` distinto de null; con una
+            # relación viva, H es null y CI-3 da `plazo_no_iniciado`.
             if self.hecho.tipo is not None:
                 inicios += ng if negativa else [_Inicio("CI-3", h, "RD 29.2")]
             return inicios
@@ -448,9 +443,8 @@ class _Calculo:
         for lectura in (self.lectura_ley(i) for i in self.inicios_ley(doc)):
             lecturas.append(_con_id(lectura, f"SR-2/{lectura.id}", cita=f"{lectura.cita} como Derecho nacional"))
         # AMBIGÜEDAD: SR-3 aplica «por extensión el art. 77.3», y se lee que
-        # incluye su segundo párrafo (prórroga) y el art. 77.4. «Solo se
-        # calcula si el expediente tiene hecho inicial»: se lee `tipo` distinto
-        # de null, como CI-3; con H null da `plazo_no_iniciado`.
+        # incluye su segundo párrafo (prórroga) y el art. 77.4.
+        # D-22: solo con hecho inicial; con H null da `plazo_no_iniciado`.
         if self.hecho.tipo is not None:
             lecturas += self.lecturas_77_3(doc, "SR-3", "AMLR 77.3 por extensión", avisos)
         return lecturas
@@ -530,25 +524,21 @@ class _Calculo:
         v_amlr = sumar_anios(self.a, PLAZO_AMLR)
         cita = f"{inicio.cita}; T-3: el primero de F + 10 años y A + 5 años"
         if v_ley <= v_amlr:
-            # AMBIGÜEDAD: la especificación no dice cómo se llama el estado
-            # después del vencimiento de T-3. Si vence por la Ley, se usa
-            # `eliminacion_exigida` (como en el ejemplo 4, OP-1), y la Ley no
-            # tiene prórroga ni art. 77.4.
+            # D-23: vence por la Ley (también si coincide con A + 5 años):
+            # `eliminacion_exigida`, sin prórroga ni art. 77.4.
             estado = EN_CONSERVACION if self.ref <= v_ley else ELIMINACION_EXIGIDA
             return [Lectura(inicio.id, NORMA_LEY, estado, cita, f, v_ley)]
-        # AMBIGÜEDAD: si vence por A + 5 años, rige el AMLR: después, prórroga
-        # (con V = A + 5 años), art. 77.4 y `supresion_exigida`.
+        # D-23: vence por A + 5 años y rige el AMLR: prórroga (con V = A + 5
+        # años), art. 77.4 y `supresion_exigida`.
         previo = EN_CONSERVACION if self.ref <= v_amlr else None
         return self.tramo_final_amlr(inicio.id, cita, f, v_amlr, avisos, estado_previo=previo)
 
     def lecturas_t4(self, doc, inicio: _Inicio, avisos) -> list[Lectura]:
         """§4.2, T-4, F ≥ A o sin F: el mayor de los plazos de la Ley y del AMLR.
 
-        AMBIGÜEDAD: la especificación no dice qué estado se da al combinar
-        los dos plazos. Mientras la Ley conserve el documento, su estado (con
-        la restricción, que «se mantiene»). Cuando la Ley exija eliminarlo, el
-        del AMLR si todavía lo conserva (prórroga, art. 77.4). Si los dos han
-        vencido, el de la norma cuyo plazo acaba más tarde.
+        D-24: mientras la Ley conserve el documento, su estado; cuando exija
+        eliminarlo, el del AMLR si todavía lo conserva; si los dos han vencido,
+        el de la norma cuyo plazo acaba más tarde (la Ley si coinciden).
         """
         ley = self.lectura_ley(inicio)
         if ley.estado != ELIMINACION_EXIGIDA:
