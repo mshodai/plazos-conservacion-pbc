@@ -1,30 +1,43 @@
 # Especificación del cálculo
 
-Este documento explica cómo se calcula el estado de conservación de un documento en una fecha de referencia, con la Ley 10/2010 y su Reglamento y con el AMLR. La entrada es el JSON de [`modelo-datos.md`](modelo-datos.md). No contiene código.
+Este documento explica cómo se calcula el estado de conservación de un documento en una fecha de referencia, con la Ley 10/2010 y su Reglamento, con el AMLR y con cada lectura de la transición entre ambos. La entrada es el JSON de [`modelo-datos.md`](modelo-datos.md), que solo recoge hechos y no lleva régimen. No contiene código.
 
 Siglas y fuentes: las de [`modelo-datos.md`](modelo-datos.md) (detalle y huellas en [`fuentes/FUENTES.md`](fuentes/FUENTES.md)). Las referencias «S-n» remiten a los casos sin resolver de ese documento.
 
 Convenciones:
 
 - Las citas van entre comillas «» y son literales.
-- **[D-n]** marca una decisión de este proyecto que no sale de los textos. Todas están numeradas y reunidas en el [§9](#9-índice-de-decisiones).
-- **Lectura** es una interpretación posible de un texto que no se resuelve. Cuando hay varias, el cálculo las devuelve todas con su resultado (§1.3) y no elige.
+- **[D-n]** marca una decisión de este proyecto que no sale de los textos. Todas están numeradas y reunidas en el [§9](#9-índice-de-decisiones). Los números son estables: una decisión retirada conserva su número y no se reutiliza.
+- **Lectura** es una interpretación posible de un texto que no se resuelve. Cuando hay varias, el cálculo las devuelve todas con su resultado (§1.4) y no elige.
 
 ---
 
 ## 1. Marco común
 
-### 1.1. Pasos del cálculo
+### 1.1. El régimen es un parámetro del cálculo
 
-Para cada documento del expediente:
+El cálculo recibe la entrada y un **régimen**, que puede ser uno de estos seis:
 
-1. **Validar** la entrada según [`modelo-datos.md`](modelo-datos.md).
-2. **Determinar la fecha de inicio del cómputo** según la categoría y el régimen (§2.1 y §3.1). Si el texto no la fija, se obtiene una fecha por cada lectura.
+| Régimen | Qué calcula | Sección |
+|---|---|---|
+| `ley_10_2010` | La Ley y el RD, aplicados solos, en cualquier fecha. | §2 |
+| `amlr` | El AMLR, aplicado solo, en cualquier fecha. | §3 |
+| `T-1` a `T-4` | Lo que se aplica en `fecha_referencia` según cada lectura de la transición del 10 de julio de 2027. | §4 |
+
+Los dos primeros sirven para comparar las normas tal como están escritas; los cuatro últimos, para saber qué se aplica en una fecha concreta según cómo se resuelva la transición, que ningún texto resuelve (S-1).
+
+**[D-14]** Una ejecución completa calcula **los seis regímenes** sobre la misma entrada y los devuelve juntos (§1.4). Ninguno es el principal ni el resultado por defecto. **[D-15, retirada]**: en la versión anterior la entrada llevaba un campo `regimen` que fijaba un estado principal y, sin que quien rellenaba la entrada lo supiera, elegía T-1/T-4 o T-2; T-3 no podía salir nunca como estado principal.
+
+### 1.2. Pasos del cálculo
+
+Para cada régimen y cada documento del expediente:
+
+1. **Validar** la entrada según [`modelo-datos.md`](modelo-datos.md). La validación no depende del régimen.
+2. **Determinar la fecha de inicio del cómputo** según la categoría y el régimen (§2.1, §3.1 y §4.2). Si el texto no la fija, se obtiene una fecha por cada lectura.
 3. **Calcular las fechas de transición** de cada lectura: vencimiento del plazo y, en su caso, inicio del acceso restringido, fin de la prórroga o fin de la conservación facultativa.
 4. **Comparar con `fecha_referencia`** y asignar el estado de cada lectura.
-5. **Añadir las lecturas de la transición de régimen** si `fecha_referencia` es igual o posterior a la fecha de aplicación del AMLR (§4).
 
-### 1.2. Cómputo de fechas
+### 1.3. Cómputo de fechas
 
 Ninguna de las tres fuentes dice cómo se cuentan los años (S-13). Se usan estas reglas:
 
@@ -33,18 +46,17 @@ Ninguna de las tres fuentes dice cómo se cuentan los años (S-13). Se usan esta
 - **[D-3]** El día F ya está dentro del plazo. Antes de F, el plazo no ha empezado.
 - **[D-4]** «Transcurridos cinco años desde F» (Ley, art. 25.1) se cumple en V₅ + 1 día, donde V₅ es F + 5 años según [D-1]. Es coherente con [D-2].
 
-### 1.3. Forma del resultado
+### 1.4. Forma del resultado
 
-**[D-5]** Para cada documento, el resultado incluye:
+**[D-5]** Para cada documento, el resultado tiene una entrada por régimen (`ley_10_2010`, `amlr`, `T-1`, `T-2`, `T-3`, `T-4`). Cada una incluye:
 
-- `estado`: uno de los estados del régimen (§2.2 y §3.2), o `indeterminado` (ver [D-6]).
-- `lecturas`: lista con una entrada por lectura. Cada entrada tiene su identificador (por ejemplo `OP-1`), su fecha de inicio del cómputo, sus fechas de transición, su estado en `fecha_referencia` y la cita en que se basa.
-- `lecturas_transicion`: las lecturas del §4, cuando proceda.
-- `avisos`: incidencias que no impiden el cálculo, como una prórroga recortada ([D-12]) o un régimen elegido fuera de su ámbito ([D-15]).
+- `estado`: uno de los estados del régimen (§2.2, §3.2 y §4.2), o `indeterminado` (ver [D-6]).
+- `lecturas`: lista con una entrada por lectura de la categoría. Cada entrada tiene su identificador (por ejemplo `OP-1`), su fecha de inicio del cómputo, sus fechas de transición, su estado en `fecha_referencia` y la cita en que se basa.
+- `avisos`: incidencias que no impiden el cálculo, como una prórroga recortada ([D-12]) o el AMLR calculado antes de ser aplicable ([D-20]).
 
-**[D-6]** Si todas las lecturas dan el mismo estado en `fecha_referencia`, `estado` toma ese valor, aunque las fechas de transición sean distintas. Si difieren, `estado` es `indeterminado`. Las lecturas se devuelven siempre.
+Además, el documento lleva una **comparación de la transición**: los estados de T-1 a T-4 uno junto a otro y si coinciden. **[D-21]**: si no coinciden, el resultado lo señala expresamente, porque significa que el estado del documento en `fecha_referencia` depende de cómo se resuelva S-1.
 
-Las lecturas de transición (§4) no alteran `estado`, que es siempre el del régimen indicado en `regimen`. Ver [D-15].
+**[D-6]** Dentro de un régimen, si todas las lecturas de la categoría dan el mismo estado en `fecha_referencia`, `estado` toma ese valor, aunque las fechas de transición sean distintas. Si difieren, `estado` es `indeterminado`. Las lecturas se devuelven siempre. Las lecturas de categoría y las de transición no se mezclan en un solo `indeterminado`: cada régimen `T-n` tiene su propio `estado`.
 
 ---
 
@@ -54,7 +66,9 @@ Las lecturas de transición (§4) no alteran `estado`, que es siempre el del ré
 
 Regla general: Ley, art. 25.1, primer párrafo: «Los sujetos obligados conservarán durante un período de diez años la documentación en que se formalice el cumplimiento de las obligaciones establecidas en la presente ley, procediendo tras el mismo a su eliminación».
 
-Llamaremos **H** a la fecha del hecho inicial: `fecha_terminacion` si es una relación de negocios y `fecha_ejecucion` si es una operación ocasional. Con este régimen no hay negativas (validación del modelo; S-2).
+Llamaremos **H** a la fecha del hecho inicial: `fecha_terminacion` si es una relación de negocios y `fecha_ejecucion` si es una operación ocasional. Si el hecho inicial es una negativa, la Ley no da fecha de inicio: ver «Expedientes con negativa» al final de este apartado.
+
+Este régimen no usa `prorrogas_autoridad` ni `procedimiento_judicial_pendiente_2027_07_10`: la Ley y el RD no tienen nada equivalente (modelo §6).
 
 #### `diligencia_debida`: 10 años desde H
 
@@ -105,6 +119,19 @@ RD, art. 42.3.d: «Conservar durante un plazo de diez años los documentos o reg
 | AF-1 | `fecha_aplicacion` |
 | AF-2 | `fecha_fin_proyecto` (`null` = plazo no iniciado) |
 
+#### Expedientes con negativa (S-2)
+
+La negativa es un hecho válido de la entrada (modelo §3.1), pero ni la Ley 25.1 ni los RD 28.1 y 29.1 cuentan desde ella. La documentación reunida está cubierta por la regla general de la Ley 25.1 («la documentación en que se formalice el cumplimiento de las obligaciones establecidas en la presente ley»), que fija diez años sin inicio.
+
+**[D-18]** Para todas las categorías cuya regla usa H, un expediente con negativa da dos lecturas:
+
+| Lectura | Inicio |
+|---|---|
+| NG-1 | `fecha_negativa`, por analogía con la terminación de la relación |
+| NG-2 | `fecha_documento` |
+
+Las categorías con lecturas propias (EE-n, CI-n, AF-n) sustituyen la lectura EE-5 o CI-3, que usan H, por NG-1 y NG-2. No hay acceso restringido: el art. 25.1 lo cuenta desde la terminación o la ejecución de la operación ocasional ([D-8]).
+
 ### 2.2. Estados y transiciones
 
 | Estado | Desde | Hasta | Base |
@@ -138,7 +165,8 @@ Aquí **H** es `fecha_terminacion`, `fecha_ejecucion` o `fecha_negativa`, según
 | `diligencia_debida` | Art. 77.1.a: «una copia de los documentos y la información obtenidos durante la realización del procedimiento de diligencia debida con respecto al cliente» | 5 años | H |
 | `operaciones` | Art. 77.1.c: «los justificantes y registros de operaciones» | 5 años | H. Dentro de una relación de negocios, la extinción de la relación: el art. 77.3 solo cuenta desde la ejecución de la operación «ocasional». |
 | `examen_especial` | Art. 77.1.b: «un registro de la evaluación realizada de conformidad con el artículo 69, apartado 2 [...] y una copia de las comunicaciones, si las hay, de sospechas de operaciones» | 5 años | H. Si el expediente no tiene hecho inicial: `indeterminado`, sin lecturas (S-4). |
-| `comunicacion_control_interno` | **Ninguna** en el art. 77.1 | — | — (§7) |
+| `comunicacion_control_interno` con `subtipo = "comunicacion_por_indicio"` | Art. 77.1.b: «una copia de las comunicaciones, si las hay, de sospechas de operaciones» | 5 años | H ([D-19]) |
+| `comunicacion_control_interno`, resto de subtipos | **Ninguna** en el art. 77.1 | — | — (§7) |
 | `aplicacion_fondos` | **Ninguna** | — | — (§7) |
 
 ### 3.2. Estados y transiciones
@@ -148,7 +176,7 @@ Aquí **H** es `fecha_terminacion`, `fecha_ejecucion` o `fecha_negativa`, según
 | `plazo_no_iniciado` | — | H − 1 día | [D-3] |
 | `en_conservacion` | H | V = H + 5 años | Art. 77.3. Art. 77.1: «Las entidades obligadas velarán por que los documentos, la información y los registros mantenidos en virtud del presente artículo no se expurguen». |
 | `conservacion_prorrogada` | V + 1 día | P = fin de la prórroga ([D-11], [D-12]) | Art. 77.3, segundo párrafo |
-| `conservacion_facultativa_77_4` | 2027-07-10 | 2032-07-10, o 2037-07-10 si `prorroga_nacional_77_4` | Art. 77.4 ([D-13]) |
+| `conservacion_facultativa_77_4` | 2027-07-10 | 2032-07-10 (lectura PA-1) o 2037-07-10 (lectura PA-2) | Art. 77.4 ([D-13]) |
 | `supresion_exigida` | V + 1 día, o P + 1 día, o fin de la conservación facultativa + 1 día | — | Art. 77.3: «las entidades obligadas suprimirán los datos personales al expirar el período de cinco años» |
 | `sin_regla` | — | — | §7 |
 
@@ -161,7 +189,8 @@ Aquí **H** es `fecha_terminacion`, `fecha_ejecucion` o `fecha_negativa`, según
 
 **Procedimientos judiciales pendientes.** Art. 77.4: «la entidad obligada podrá conservar esa información o esos documentos durante un período de cinco años a partir del 10 de julio de 2027». El segundo párrafo permite a los Estados miembros «permitir o requerir la conservación de los datos o información durante un período adicional de cinco años».
 
-- **[D-13]** Si `procedimiento_judicial_pendiente_2027_07_10 = true` y el documento estaría en `supresion_exigida` en `fecha_referencia`, pasa a `conservacion_facultativa_77_4` mientras `fecha_referencia` ≤ 2032-07-10 (o 2037-07-10 con `prorroga_nacional_77_4`). Es facultativa porque el texto dice «podrá». Para el período adicional se usa también «facultativa», porque las fuentes no dicen si España lo permite o lo exige (S-11). Si el documento estaría en `en_conservacion` o `conservacion_prorrogada`, prevalece ese estado.
+- **[D-13]** Si `procedimiento_judicial_pendiente_2027_07_10 = true` y el documento estaría en `supresion_exigida` en `fecha_referencia`, pasa a `conservacion_facultativa_77_4` mientras `fecha_referencia` no supere el fin de la conservación facultativa. Es facultativa porque el texto dice «podrá». Si el documento estaría en `en_conservacion` o `conservacion_prorrogada`, prevalece ese estado.
+- Si España permite o exige el período adicional no está en las fuentes (S-11), así que hay dos lecturas: **PA-1**, sin período adicional (fin el 2032-07-10), y **PA-2**, con él (fin el 2037-07-10). Con PA-2 también se usa «facultativa», porque tampoco se sabe si sería permitir o requerir. Con `procedimiento_judicial_pendiente_2027_07_10 = false`, estas lecturas no existen.
 
 ---
 
@@ -177,7 +206,7 @@ Aquí **H** es `fecha_terminacion`, `fecha_ejecucion` o `fecha_negativa`, según
 
 **Lo que ningún texto dice:** qué plazo se aplica a un documento cuyo plazo de diez años empezó con la Ley antes del 10 de julio de 2027 y sigue en curso ese día. Tampoco dice si el art. 25 de la Ley sigue vigente como «Derecho nacional» en el sentido del art. 77.3 (S-1, S-9).
 
-En lo que sigue, **A** es la fecha de aplicación: 2027-07-10, o 2029-07-10 si `sujeto.amlr_art3_3_n_o = true`.
+En lo que sigue, **A** es la fecha de aplicación: 2027-07-10, o 2029-07-10 si `sujeto.actividad` es `agente_de_futbol` o `club_de_futbol_profesional` (para los clubes, ver S-15).
 
 ### 4.2. Lecturas
 
@@ -186,7 +215,7 @@ En lo que sigue, **A** es la fecha de aplicación: 2027-07-10, o 2029-07-10 si `
 | **T-1. Pervivencia de la Ley** | El plazo iniciado sigue la norma vigente cuando empezó. | Régimen de la Ley entero (§2): 10 años y acceso restringido. | AMLR (§3). |
 | **T-2. Aplicación inmediata con cómputo desde H** | El AMLR se aplica desde A a todo lo conservado y cuenta los 5 años desde el hecho original. | Hasta A − 1: Ley. Desde A: AMLR con V = H + 5 años. Si V < A, `supresion_exigida` desde A (salvo art. 77.4). | AMLR (§3). |
 | **T-3. Aplicación inmediata con cómputo desde A** | Por analogía con el art. 77.4, que cuenta «a partir del 10 de julio de 2027», los 5 años corren desde A. | Hasta A − 1: Ley. Desde A: vence el primero de estos dos días: el vencimiento de la Ley (H + 10 años) o A + 5 años. Sin acceso restringido. | AMLR (§3). |
-| **T-4. Plazo nacional superior** | Los 10 años de la Ley son un «período de conservación [...] del Derecho nacional» (art. 77.3) y siguen rigiendo mientras la Ley no cambie. | Régimen de la Ley (§2). | Plazo y restricción de la Ley (§2), con el hecho inicial del AMLR: incluye las negativas, cuyo inicio no existe en la Ley, así que queda `indeterminado`. |
+| **T-4. Plazo nacional superior** | Los 10 años de la Ley son un «período de conservación [...] del Derecho nacional» (art. 77.3) y siguen rigiendo mientras la Ley no cambie. | Régimen de la Ley (§2). | Desde A, el mayor de los dos plazos: el de la Ley (§2, con sus lecturas NG-n para las negativas) y el del AMLR (§3). Se mantiene la restricción de la Ley. |
 
 Notas:
 
@@ -194,13 +223,15 @@ Notas:
 - **T-4** no es solo transitoria: afecta también a los hechos posteriores a A. Se incluye aquí porque es la que más cambia el resultado desde A.
 - **Relación viva el día A** (`fecha_terminacion` nula o posterior a A): el plazo no había empezado con la Ley. T-1, T-2 y T-3 coinciden en aplicar el AMLR; T-4 aplica 10 años.
 - **Categorías sin inicio declarado** (`examen_especial`, `comunicacion_control_interno` y `aplicacion_fondos` con la Ley): la comparación con A se hace con la fecha de inicio de cada lectura de la categoría. El resultado es la combinación de ambas, por ejemplo `T-1 × EE-2`.
-- **Categorías sin regla en el AMLR:** con T-2 y T-3 quedan en `sin_regla` desde A. Con T-1 y T-4 siguen el régimen de la Ley. Ver §7.
+- **Categorías sin regla en el AMLR:** con T-2 y T-3 quedan en `sin_regla` desde A. Con T-1, siguen la Ley si la fecha de inicio de la lectura es anterior a A, y quedan en `sin_regla` si no. Con T-4 siguen la Ley. Ver §7.
 
-### 4.3. Cómo se integra con `regimen`
+### 4.3. Antes de A y cuándo coinciden las lecturas
 
-**[D-14]** Si `fecha_referencia` ≥ A, el resultado incluye siempre `lecturas_transicion`, con el estado del documento según T-1, T-2, T-3 y T-4, sea cual sea `regimen`.
+- **Antes de A**, los cuatro regímenes `T-n` dan el resultado de `ley_10_2010`: el AMLR todavía no es aplicable. Se calculan igual ([D-14]), y la comparación dice que coinciden.
+- **Desde A**, `T-1`, `T-2` y `T-3` coinciden con `amlr` para los documentos con H ≥ A, y difieren entre sí solo en los documentos con H < A.
+- `T-4` puede diferir de los demás en cualquier documento desde A.
 
-**[D-15]** `estado` sigue siendo el del régimen indicado, aplicado entero: `ley_10_2010` calcula §2 y `amlr` calcula §3. Para un documento con H < A, esto equivale a elegir T-1 o T-4 con `ley_10_2010`, y T-2 con `amlr`. **El cálculo no elige**: esa elección la hace quien rellena `regimen`, y el resultado la hace visible con un aviso cuando alguna lectura de transición da un estado distinto. T-3 solo aparece en `lecturas_transicion`.
+**[D-20]** El régimen `amlr` se calcula también cuando `fecha_referencia` es anterior a A, porque comparar las normas es uno de los objetivos del proyecto. El resultado lleva el aviso de que el AMLR no es aplicable en esa fecha. Base: art. 90, «Será aplicable a partir del 10 de julio de 2027».
 
 ---
 
@@ -278,7 +309,7 @@ En el cálculo, `acceso_restringido` es un estado de conservación: el documento
 
 El art. 77.1 enumera lo que se conserva: diligencia debida (a), evaluación y comunicaciones de sospecha (b), operaciones (c) e intercambio de información en asociaciones (d). No incluye las políticas, los análisis de riesgo, las actas del órgano de control ni las comunicaciones sistemáticas. El art. 9.2.a.vi pide políticas internas sobre «la conservación de registros y políticas en relación con el tratamiento de datos personales con arreglo al artículo 76 y 77», pero no fija ningún plazo. La búsqueda de «conserv» en la parte dispositiva del AMLR no encontró otro.
 
-Las comunicaciones de sospecha no están en este caso: van a `examen_especial` (modelo §4.4) y siguen el art. 77.1.b.
+Las comunicaciones de sospecha no están en este caso. Se registran en esta categoría con `subtipo = "comunicacion_por_indicio"` (modelo §4.4) y siguen el art. 77.1.b. **[D-19]**: se les aplica el art. 77.1.b aunque la categoría sea la misma que la de los documentos sin regla, porque la letra b) las nombra expresamente.
 
 ### 7.2. `aplicacion_fondos`
 
@@ -286,7 +317,7 @@ Las fundaciones y asociaciones no figuran como tales entre las entidades obligad
 
 ### 7.3. Resultado
 
-**[D-17]** Con `regimen = "amlr"`, estas dos categorías dan `estado = sin_regla`, sin fechas. No es lo mismo que `supresion_exigida`: el AMLR no manda suprimir lo que no regula, porque el art. 77.3 solo habla de «la información indicada en los apartados 1 y 2». Tampoco es `en_conservacion`, porque el AMLR no obliga a conservarlo.
+**[D-17]** Con el régimen `amlr`, estas dos categorías dan `estado = sin_regla`, sin fechas. No es lo mismo que `supresion_exigida`: el AMLR no manda suprimir lo que no regula, porque el art. 77.3 solo habla de «la información indicada en los apartados 1 y 2». Tampoco es `en_conservacion`, porque el AMLR no obliga a conservarlo.
 
 Las lecturas posibles se devuelven en `lecturas`:
 
@@ -313,16 +344,16 @@ Relación de negocios terminada el **2020-03-15**. Documento: copia del DNI.
 | Vencimiento V | 2030-03-15 | 2025-03-15 |
 | Eliminación / supresión desde | 2030-03-16 | 2025-03-16 |
 
-Con `fecha_referencia = 2028-01-01` (posterior a A = 2027-07-10), las lecturas de transición:
+Con `fecha_referencia = 2028-01-01` (posterior a A = 2027-07-10), los regímenes de transición:
 
-| Lectura | Estado | Por qué |
+| Régimen | Estado | Por qué |
 |---|---|---|
 | T-1 | `acceso_restringido` | Ley: restringido desde 2025-03-16 hasta 2030-03-15. |
 | T-2 | `supresion_exigida` | V = 2025-03-15 < A: suprimir desde 2027-07-10. |
 | T-3 | `en_conservacion` | Vence el primero de 2030-03-15 y 2032-07-10, es decir, 2030-03-15. Sin restricción. |
 | T-4 | `acceso_restringido` | Igual que T-1. |
 
-Con `regimen = "ley_10_2010"`, `estado = acceso_restringido`. Con `regimen = "amlr"`, `estado = supresion_exigida`. En los dos casos hay un aviso de [D-15].
+Régimen `ley_10_2010`: `acceso_restringido`. Régimen `amlr`: `supresion_exigida`. La comparación de la transición señala que T-1 a T-4 no coinciden ([D-21]): el estado de este documento el 2028-01-01 depende de cómo se resuelva S-1.
 
 ### Ejemplo 2. Operación ocasional en año bisiesto, después de la transición
 
@@ -341,8 +372,9 @@ El mismo día en que la Ley empieza a restringir el acceso, el AMLR ya obliga a 
 Negativa a entablar una relación el **2028-05-10**. Documento: registro de la decisión (art. 21.3). `fecha_referencia = 2030-01-01`.
 
 - **AMLR:** inicio 2028-05-10; V = 2033-05-10. Estado: `en_conservacion`.
-- **Ley:** con `regimen = "ley_10_2010"`, la entrada no es válida (modelo §3.1; S-2).
-- **Transición:** T-1, T-2 y T-3 dan `en_conservacion`. T-4 da `indeterminado`, porque la Ley no tiene inicio para la negativa (§4.2).
+- **Ley:** la negativa no inicia el cómputo (S-2). Lecturas [D-18]: NG-1 desde 2028-05-10, V = 2038-05-10; NG-2 desde la fecha del registro, que aquí es la misma. Estado: `en_conservacion`.
+- **Transición:** H ≥ A, así que T-1, T-2 y T-3 dan lo mismo que `amlr`: `en_conservacion`. T-4 toma el mayor plazo, el de la Ley: `en_conservacion` hasta 2038-05-10.
+- Los seis regímenes coinciden el 2030-01-01. Divergen desde el 2033-05-11: `amlr`, T-1, T-2 y T-3 dan `supresion_exigida`; `ley_10_2010` y T-4, `en_conservacion`.
 
 ### Ejemplo 4. Operación dentro de una relación: contradicción entre la Ley y el RD
 
@@ -355,15 +387,19 @@ Relación de negocios del 2012-01-01 al **2026-12-31**. Operación ejecutada el 
 | Acceso restringido desde | — (R = 2032-01-01 > V) | 2032-01-01 | — |
 | Eliminación / supresión desde | 2024-04-02 | 2037-01-01 | 2032-01-01 |
 
-- **`fecha_referencia = 2025-01-01`, `regimen = "ley_10_2010"`** (antes de la transición):
+- **`fecha_referencia = 2025-01-01`, régimen `ley_10_2010`** (antes de A, así que T-1 a T-4 dan lo mismo):
   - OP-1: `eliminacion_exigida`, con la relación todavía viva.
   - OP-2: `en_conservacion`.
   - `estado = indeterminado`.
-- **`fecha_referencia = 2032-06-01`, `regimen = "ley_10_2010"`:**
+- **`fecha_referencia = 2032-06-01`, régimen `ley_10_2010`:**
   - OP-1: `eliminacion_exigida`.
   - OP-2: `acceso_restringido`.
   - `estado = indeterminado`.
-  - Lecturas de transición: H (2026-12-31) < A. T-1 × OP-2 y T-4 × OP-2: `acceso_restringido`. T-2: `supresion_exigida`. T-3: `en_conservacion` hasta el primero de 2036-12-31 y 2032-07-10, es decir, 2032-07-10. Las combinaciones con OP-1: `eliminacion_exigida`.
+  - Régimen `amlr`: `supresion_exigida`.
+  - Regímenes de transición (H = 2026-12-31 < A), cada uno con sus lecturas OP-1 y OP-2:
+    - T-1 y T-4: OP-1 `eliminacion_exigida`, OP-2 `acceso_restringido`; `estado = indeterminado`.
+    - T-2: `supresion_exigida` (el AMLR no distingue OP-1 y OP-2).
+    - T-3: OP-1 `eliminacion_exigida` (vencida con la Ley antes de A); OP-2 `en_conservacion`, hasta el primero de 2036-12-31 y 2032-07-10, es decir, 2032-07-10; `estado = indeterminado`.
 
 ### Ejemplo 5. Examen especial: cinco lecturas con la Ley, una con el AMLR
 
@@ -418,7 +454,7 @@ Relación terminada el **2021-01-15**. `procedimiento_judicial_pendiente_2027_07
 - **AMLR:**
   - V = 2026-01-15, anterior a A.
   - Sin el art. 77.4, el estado sería `supresion_exigida`.
-  - Con el art. 77.4: `conservacion_facultativa_77_4` hasta 2032-07-10 ([D-13]).
+  - Con el art. 77.4: `conservacion_facultativa_77_4` hasta 2032-07-10 con PA-1 y hasta 2037-07-10 con PA-2 ([D-13]). Las dos dan el mismo estado el 2031-06-01.
 - **Ley:**
   - V = 2031-01-15; restringido desde 2026-01-16.
   - Estado: `eliminacion_exigida` desde 2031-01-16. La Ley y el RD no tienen excepción por procedimiento judicial: la búsqueda de «procedimiento judicial» solo encontró el RD, art. 45, sobre medios de pago intervenidos.
@@ -431,20 +467,24 @@ Aquí la Ley obliga a eliminar y el AMLR permite conservar.
 
 | Id | Decisión | Sección |
 |---|---|---|
-| D-1 | «N años desde F» vence el mismo día y mes N años después; 29 de febrero → 28 de febrero. | §1.2 |
-| D-2 | El día de vencimiento está dentro del plazo. | §1.2 |
-| D-3 | El día de inicio está dentro del plazo. | §1.2 |
-| D-4 | «Transcurridos cinco años» se cumple el día siguiente al quinto aniversario. | §1.2 |
-| D-5 | El resultado incluye estado, todas las lecturas, lecturas de transición y avisos. | §1.3 |
-| D-6 | Si todas las lecturas coinciden en el estado, no es `indeterminado`. | §1.3 |
+| D-1 | «N años desde F» vence el mismo día y mes N años después; 29 de febrero → 28 de febrero. | §1.3 |
+| D-2 | El día de vencimiento está dentro del plazo. | §1.3 |
+| D-3 | El día de inicio está dentro del plazo. | §1.3 |
+| D-4 | «Transcurridos cinco años» se cumple el día siguiente al quinto aniversario. | §1.3 |
+| D-5 | El resultado tiene una entrada por régimen, cada una con estado, lecturas y avisos. | §1.4 |
+| D-6 | Dentro de un régimen, si todas las lecturas coinciden en el estado, no es `indeterminado`. | §1.4 |
 | D-7 | EE-4 usa la fecha de decisión si no hubo comunicación. | §2.1 |
 | D-8 | Sin hecho inicial no hay acceso restringido. | §2.2, §6.3 |
 | D-9 | La restricción también cubre documentación cuyo plazo empieza después de R. | §2.2 |
 | D-10 | `supresion_exigida` se refiere solo a datos personales; lo demás va a avisos. | §3.2 |
 | D-11 | Una prórroga requerida después del vencimiento no se aplica. | §3.2 |
 | D-12 | Las prórrogas se acumulan con un límite total de cinco años. | §3.2 |
-| D-13 | El art. 77.4 y su período adicional dan conservación facultativa. | §3.2 |
-| D-14 | Desde A, el resultado incluye siempre las lecturas T-1 a T-4. | §4.3 |
-| D-15 | `estado` aplica entero el régimen indicado; si una lectura de transición discrepa, hay aviso. | §4.3 |
+| D-13 | El art. 77.4 da conservación facultativa; el período adicional se trata con las lecturas PA-1 y PA-2. | §3.2 |
+| D-14 | El régimen es un parámetro del cálculo; se calculan siempre los seis y ninguno es principal. | §1.1 |
+| D-15 | *Retirada.* Era: el campo `regimen` de la entrada fijaba el estado principal. Sustituida por D-14. | §1.1 |
 | D-16 | El cálculo no modela permisos de acceso. | §6.2 |
 | D-17 | Las categorías sin regla en el AMLR dan `sin_regla`, con lecturas SR-1 a SR-3. | §7.3 |
+| D-18 | Con la Ley, un expediente con negativa da las lecturas NG-1 (fecha de la negativa) y NG-2 (fecha del documento), sin acceso restringido. | §2.1 |
+| D-19 | Una comunicación por indicio sigue el AMLR 77.1.b, aunque esté en `comunicacion_control_interno`. | §3.1, §7.1 |
+| D-20 | El AMLR se calcula también antes de A, con aviso. | §4.3 |
+| D-21 | Si T-1 a T-4 no coinciden, el resultado lo señala expresamente. | §1.4 |
