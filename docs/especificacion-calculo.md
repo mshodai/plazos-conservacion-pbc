@@ -2,7 +2,7 @@
 
 Este documento explica cómo se calcula el estado de conservación de un documento en una fecha de referencia, con la Ley 10/2010 y su Reglamento, con el AMLR y con cada lectura de la transición entre ambos. La entrada es el JSON de [`modelo-datos.md`](modelo-datos.md), que solo recoge hechos y no lleva régimen. No contiene código.
 
-Siglas y fuentes: las de [`modelo-datos.md`](modelo-datos.md) (detalle y huellas en [`fuentes/FUENTES.md`](fuentes/FUENTES.md)). Las referencias «S-n» remiten a los casos sin resolver de ese documento.
+Siglas y fuentes: las de [`modelo-datos.md`](modelo-datos.md) (detalle y huellas en [`fuentes/FUENTES.md`](fuentes/FUENTES.md)). Las referencias «S-n» remiten a los casos que la norma no resuelve, en [`ambiguedades.md`](ambiguedades.md).
 
 Convenciones:
 
