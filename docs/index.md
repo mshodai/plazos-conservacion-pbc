@@ -90,6 +90,6 @@ La alternativa no es que la herramienta decida mejor, sino que no decida: que ca
 
 ---
 
-El código, la especificación, el corpus y las fuentes con su versión están en [github.com/mshodai/plazos-conservacion-pbc](https://github.com/mshodai/plazos-conservacion-pbc). El texto del Reglamento (UE) 2016/679 citado es el publicado en el BOE (DOUE-L-2016-80807); no forma parte de las fuentes del repositorio.
+El código, la especificación, el corpus y las fuentes con su versión están en [github.com/mshodai/plazos-conservacion-pbc](https://github.com/mshodai/plazos-conservacion-pbc). El texto del Reglamento (UE) 2016/679 citado es el publicado en el «Diario Oficial de la Unión Europea» L 119 de 4.5.2016, tal como lo sirve el BOE (DOUE-L-2016-80807); su URL y su huella están en [docs/fuentes/FUENTES.md](https://github.com/mshodai/plazos-conservacion-pbc/blob/main/docs/fuentes/FUENTES.md).
 
 Este artículo es un análisis de la arquitectura de una herramienta de cálculo, no asesoramiento jurídico.
