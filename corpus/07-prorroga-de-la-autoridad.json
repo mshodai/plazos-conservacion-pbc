@@ -1,0 +1,35 @@
+{
+  "version_modelo": 2,
+  "fecha_referencia": "2035-06-01",
+  "sujeto": {
+    "naturaleza": "sujeto_obligado",
+    "actividad": "otra"
+  },
+  "expediente": {
+    "id": "EXP-FICTICIO-07",
+    "hecho_inicial": {
+      "tipo": "relacion_de_negocios",
+      "fecha_inicio": "2023-01-01",
+      "fecha_terminacion": "2028-09-30",
+      "fecha_ejecucion": null,
+      "fecha_negativa": null,
+      "objeto_negativa": null
+    },
+    "documentos": [
+      {
+        "id": "DOC-FICTICIO-1",
+        "categoria": "diligencia_debida",
+        "descripcion": "Documento ficticio: justificante inventado de actividad",
+        "fecha_documento": "2023-01-01"
+      }
+    ],
+    "prorrogas_autoridad": [
+      {
+        "autoridad": "Autoridad ficticia",
+        "fecha_requerimiento": "2033-05-01",
+        "fecha_fin": "2036-12-31"
+      }
+    ],
+    "procedimiento_judicial_pendiente_2027_07_10": false
+  }
+}

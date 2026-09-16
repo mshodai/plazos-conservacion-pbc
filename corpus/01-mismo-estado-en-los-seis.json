@@ -1,0 +1,29 @@
+{
+  "version_modelo": 2,
+  "fecha_referencia": "2030-01-01",
+  "sujeto": {
+    "naturaleza": "sujeto_obligado",
+    "actividad": "otra"
+  },
+  "expediente": {
+    "id": "EXP-FICTICIO-01",
+    "hecho_inicial": {
+      "tipo": "relacion_de_negocios",
+      "fecha_inicio": "2020-01-01",
+      "fecha_terminacion": "2028-01-01",
+      "fecha_ejecucion": null,
+      "fecha_negativa": null,
+      "objeto_negativa": null
+    },
+    "documentos": [
+      {
+        "id": "DOC-FICTICIO-1",
+        "categoria": "diligencia_debida",
+        "descripcion": "Documento ficticio: copia de un documento de identidad inventado",
+        "fecha_documento": "2020-01-01"
+      }
+    ],
+    "prorrogas_autoridad": [],
+    "procedimiento_judicial_pendiente_2027_07_10": false
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "caso": "08-procedimiento-judicial-pendiente",
+  "demuestra": "Diligencia debida de una relación terminada el 2019-11-30, relacionada con un procedimiento judicial pendiente el 2027-07-10, a fecha 2033-03-01. El AMLR ya exigía suprimir desde el 2024-12-01, pero el art. 77.4 permite conservar desde el 2027-07-10: hasta el 2032-07-10 sin período adicional (PA-1) o hasta el 2037-07-10 con él (PA-2). Hoy PA-1 exige suprimir y PA-2 permite conservar: indeterminado (D-13). La Ley, sin excepción judicial, exige eliminar desde el 2029-12-01, y T-3 también (D-23).",
+  "resultado": {
+    "codigo_salida": 1,
+    "estados": {
+      "ley_10_2010": "eliminacion_exigida",
+      "amlr": "indeterminado",
+      "T-1": "eliminacion_exigida",
+      "T-2": "indeterminado",
+      "T-3": "eliminacion_exigida",
+      "T-4": "eliminacion_exigida"
+    },
+    "transicion_coincide": false,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2019-11-30",
+            "acceso_restringido_desde": "2024-12-01",
+            "vencimiento": "2029-11-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2019-11-30",
+            "en_conservacion"
+          ],
+          [
+            "2024-12-01",
+            "acceso_restringido"
+          ],
+          [
+            "2029-12-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "PA-1": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2019-11-30",
+            "vencimiento": "2024-11-30",
+            "fin_conservacion_facultativa": "2032-07-10"
+          },
+          "PA-2": {
+            "norma": "amlr",
+            "estado": "conservacion_facultativa_77_4",
+            "inicio": "2019-11-30",
+            "vencimiento": "2024-11-30",
+            "fin_conservacion_facultativa": "2037-07-10"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2019-11-30",
+            "en_conservacion"
+          ],
+          [
+            "2024-12-01",
+            "supresion_exigida"
+          ],
+          [
+            "2027-07-10",
+            "conservacion_facultativa_77_4"
+          ],
+          [
+            "2032-07-11",
+            "indeterminado"
+          ],
+          [
+            "2037-07-11",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2019-11-30",
+            "acceso_restringido_desde": "2024-12-01",
+            "vencimiento": "2029-11-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2019-11-30",
+            "en_conservacion"
+          ],
+          [
+            "2024-12-01",
+            "acceso_restringido"
+          ],
+          [
+            "2029-12-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "PA-1": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2019-11-30",
+            "vencimiento": "2024-11-30",
+            "fin_conservacion_facultativa": "2032-07-10"
+          },
+          "PA-2": {
+            "norma": "amlr",
+            "estado": "conservacion_facultativa_77_4",
+            "inicio": "2019-11-30",
+            "vencimiento": "2024-11-30",
+            "fin_conservacion_facultativa": "2037-07-10"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2019-11-30",
+            "en_conservacion"
+          ],
+          [
+            "2024-12-01",
+            "acceso_restringido"
+          ],
+          [
+            "2027-07-10",
+            "conservacion_facultativa_77_4"
+          ],
+          [
+            "2032-07-11",
+            "indeterminado"
+          ],
+          [
+            "2037-07-11",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2019-11-30",
+            "vencimiento": "2029-11-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2019-11-30",
+            "en_conservacion"
+          ],
+          [
+            "2024-12-01",
+            "acceso_restringido"
+          ],
+          [
+            "2027-07-10",
+            "en_conservacion"
+          ],
+          [
+            "2029-12-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2019-11-30",
+            "acceso_restringido_desde": "2024-12-01",
+            "vencimiento": "2029-11-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2019-11-30",
+            "en_conservacion"
+          ],
+          [
+            "2024-12-01",
+            "acceso_restringido"
+          ],
+          [
+            "2029-12-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      }
+    }
+  }
+}

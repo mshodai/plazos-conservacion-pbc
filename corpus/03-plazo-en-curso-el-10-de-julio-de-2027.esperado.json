@@ -1,0 +1,199 @@
+{
+  "caso": "03-plazo-en-curso-el-10-de-julio-de-2027",
+  "demuestra": "Diligencia debida de una relación terminada el 2021-10-31, cuyo plazo de la Ley sigue en curso el 2027-07-10. A fecha 2028-06-30 las lecturas de la transición no coinciden: T-1 y T-4 mantienen la Ley (acceso restringido), T-2 aplica el AMLR desde H y exige suprimir desde A, y T-3 cuenta desde A con el límite de la Ley y vuelve a en_conservacion sin restricción. T-1 y T-4 no pueden diferir aquí: para un plazo que empezó antes de A, las dos son la Ley (§4.2).",
+  "resultado": {
+    "codigo_salida": 1,
+    "estados": {
+      "ley_10_2010": "acceso_restringido",
+      "amlr": "supresion_exigida",
+      "T-1": "acceso_restringido",
+      "T-2": "supresion_exigida",
+      "T-3": "en_conservacion",
+      "T-4": "acceso_restringido"
+    },
+    "transicion_coincide": false,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-10-31",
+            "acceso_restringido_desde": "2026-11-01",
+            "vencimiento": "2031-10-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-10-31",
+            "en_conservacion"
+          ],
+          [
+            "2026-11-01",
+            "acceso_restringido"
+          ],
+          [
+            "2031-11-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2021-10-31",
+            "vencimiento": "2026-10-31"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-10-31",
+            "en_conservacion"
+          ],
+          [
+            "2026-11-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-10-31",
+            "acceso_restringido_desde": "2026-11-01",
+            "vencimiento": "2031-10-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-10-31",
+            "en_conservacion"
+          ],
+          [
+            "2026-11-01",
+            "acceso_restringido"
+          ],
+          [
+            "2031-11-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2021-10-31",
+            "vencimiento": "2026-10-31"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-10-31",
+            "en_conservacion"
+          ],
+          [
+            "2026-11-01",
+            "acceso_restringido"
+          ],
+          [
+            "2027-07-10",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "en_conservacion",
+            "inicio": "2021-10-31",
+            "vencimiento": "2031-10-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-10-31",
+            "en_conservacion"
+          ],
+          [
+            "2026-11-01",
+            "acceso_restringido"
+          ],
+          [
+            "2027-07-10",
+            "en_conservacion"
+          ],
+          [
+            "2031-11-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-10-31",
+            "acceso_restringido_desde": "2026-11-01",
+            "vencimiento": "2031-10-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-10-31",
+            "en_conservacion"
+          ],
+          [
+            "2026-11-01",
+            "acceso_restringido"
+          ],
+          [
+            "2031-11-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "caso": "07-prorroga-de-la-autoridad",
+  "demuestra": "Diligencia debida de una relación terminada el 2028-09-30, con un requerimiento de la autoridad del 2033-05-01 para conservarla hasta el 2036-12-31, a fecha 2035-06-01. En el AMLR, conservación prorrogada del 2033-10-01 al 2036-12-31 (art. 77.3, D-11, D-12); en la Ley, que no tiene prórroga, acceso restringido hasta el 2038-09-30. T-4 elimina por la Ley el 2038-10-01, porque la Ley acaba después que la prórroga (D-24). Como la línea temporal proyecta los hechos de hoy (D-25), la prórroga aparece aunque se requirió después de empezar el plazo.",
+  "resultado": {
+    "codigo_salida": 1,
+    "estados": {
+      "ley_10_2010": "acceso_restringido",
+      "amlr": "conservacion_prorrogada",
+      "T-1": "conservacion_prorrogada",
+      "T-2": "conservacion_prorrogada",
+      "T-3": "conservacion_prorrogada",
+      "T-4": "acceso_restringido"
+    },
+    "transicion_coincide": false,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2028-09-30",
+            "acceso_restringido_desde": "2033-10-01",
+            "vencimiento": "2038-09-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-09-30",
+            "en_conservacion"
+          ],
+          [
+            "2033-10-01",
+            "acceso_restringido"
+          ],
+          [
+            "2038-10-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "conservacion_prorrogada",
+            "inicio": "2028-09-30",
+            "vencimiento": "2033-09-30",
+            "fin_prorroga": "2036-12-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-09-30",
+            "en_conservacion"
+          ],
+          [
+            "2033-10-01",
+            "conservacion_prorrogada"
+          ],
+          [
+            "2037-01-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "DD": {
+            "norma": "amlr",
+            "estado": "conservacion_prorrogada",
+            "inicio": "2028-09-30",
+            "vencimiento": "2033-09-30",
+            "fin_prorroga": "2036-12-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-09-30",
+            "en_conservacion"
+          ],
+          [
+            "2033-10-01",
+            "conservacion_prorrogada"
+          ],
+          [
+            "2037-01-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "conservacion_prorrogada",
+            "inicio": "2028-09-30",
+            "vencimiento": "2033-09-30",
+            "fin_prorroga": "2036-12-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-09-30",
+            "en_conservacion"
+          ],
+          [
+            "2033-10-01",
+            "conservacion_prorrogada"
+          ],
+          [
+            "2037-01-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "DD": {
+            "norma": "amlr",
+            "estado": "conservacion_prorrogada",
+            "inicio": "2028-09-30",
+            "vencimiento": "2033-09-30",
+            "fin_prorroga": "2036-12-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-09-30",
+            "en_conservacion"
+          ],
+          [
+            "2033-10-01",
+            "conservacion_prorrogada"
+          ],
+          [
+            "2037-01-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2028-09-30",
+            "acceso_restringido_desde": "2033-10-01",
+            "vencimiento": "2038-09-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-09-30",
+            "en_conservacion"
+          ],
+          [
+            "2033-10-01",
+            "acceso_restringido"
+          ],
+          [
+            "2038-10-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      }
+    }
+  }
+}

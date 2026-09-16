@@ -1,0 +1,33 @@
+{
+  "version_modelo": 2,
+  "fecha_referencia": "2031-02-18",
+  "sujeto": {
+    "naturaleza": "sujeto_obligado",
+    "actividad": "otra"
+  },
+  "expediente": {
+    "id": "EXP-FICTICIO-05",
+    "hecho_inicial": {
+      "tipo": "relacion_de_negocios",
+      "fecha_inicio": "2018-06-01",
+      "fecha_terminacion": "2022-03-31",
+      "fecha_ejecucion": null,
+      "fecha_negativa": null,
+      "objeto_negativa": null
+    },
+    "documentos": [
+      {
+        "id": "DOC-FICTICIO-1",
+        "categoria": "examen_especial",
+        "descripcion": "Documento ficticio: expediente de examen especial inventado",
+        "fecha_documento": "2021-01-10",
+        "fecha_apertura": "2021-01-10",
+        "fecha_cierre": "2021-02-15",
+        "fecha_decision_comunicacion": "2021-02-20",
+        "fecha_comunicacion": "2021-02-25"
+      }
+    ],
+    "prorrogas_autoridad": [],
+    "procedimiento_judicial_pendiente_2027_07_10": false
+  }
+}

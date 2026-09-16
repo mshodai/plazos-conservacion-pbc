@@ -1,0 +1,164 @@
+{
+  "caso": "04-operacion-en-relacion-viva",
+  "demuestra": "Operación ejecutada el 2015-05-20 dentro de una relación que sigue viva, a fecha 2026-01-01. Con la letra de la Ley (OP-1, art. 25.1.b) la operación ya debía eliminarse el 2025-05-21; con el RD (OP-2, art. 29.1) su plazo no ha empezado, porque cuenta desde la terminación. La Ley queda indeterminado (D-6), y T-1 a T-4 con ella, porque es antes de A. La línea temporal no cambia al pasar de en_conservacion a eliminacion_exigida en OP-1: el estado del régimen sigue siendo indeterminado (D-26).",
+  "resultado": {
+    "codigo_salida": 1,
+    "estados": {
+      "ley_10_2010": "indeterminado",
+      "amlr": "plazo_no_iniciado",
+      "T-1": "indeterminado",
+      "T-2": "indeterminado",
+      "T-3": "indeterminado",
+      "T-4": "indeterminado"
+    },
+    "transicion_coincide": true,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "OP-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2015-05-20",
+            "vencimiento": "2025-05-20"
+          },
+          "OP-2": {
+            "norma": "ley",
+            "estado": "plazo_no_iniciado"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2015-05-20",
+            "indeterminado"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "plazo_no_iniciado"
+          }
+        },
+        "avisos": [
+          "D-20"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "OP-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2015-05-20",
+            "vencimiento": "2025-05-20"
+          },
+          "OP-2": {
+            "norma": "ley",
+            "estado": "plazo_no_iniciado"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2015-05-20",
+            "indeterminado"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "OP-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2015-05-20",
+            "vencimiento": "2025-05-20"
+          },
+          "OP-2": {
+            "norma": "ley",
+            "estado": "plazo_no_iniciado"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2015-05-20",
+            "indeterminado"
+          ],
+          [
+            "2027-07-10",
+            "plazo_no_iniciado"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "OP-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2015-05-20",
+            "vencimiento": "2025-05-20"
+          },
+          "OP-2": {
+            "norma": "ley",
+            "estado": "plazo_no_iniciado"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2015-05-20",
+            "indeterminado"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "OP-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2015-05-20",
+            "vencimiento": "2025-05-20"
+          },
+          "OP-2": {
+            "norma": "ley",
+            "estado": "plazo_no_iniciado"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2015-05-20",
+            "indeterminado"
+          ]
+        ]
+      }
+    }
+  }
+}

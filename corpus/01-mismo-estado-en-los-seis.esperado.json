@@ -1,0 +1,178 @@
+{
+  "caso": "01-mismo-estado-en-los-seis",
+  "demuestra": "Diligencia debida de una relación terminada el 2028-01-01, a fecha 2030-01-01. Los seis regímenes dan en_conservacion: la Ley vence el 2038-01-01 y el AMLR el 2033-01-01, y los dos plazos están en curso. Código 0, aunque la línea temporal muestra que divergen desde el 2033-01-02: el código solo mira la fecha de referencia (§9.3).",
+  "resultado": {
+    "codigo_salida": 0,
+    "estados": {
+      "ley_10_2010": "en_conservacion",
+      "amlr": "en_conservacion",
+      "T-1": "en_conservacion",
+      "T-2": "en_conservacion",
+      "T-3": "en_conservacion",
+      "T-4": "en_conservacion"
+    },
+    "transicion_coincide": true,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "en_conservacion",
+            "inicio": "2028-01-01",
+            "acceso_restringido_desde": "2033-01-02",
+            "vencimiento": "2038-01-01"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-01-01",
+            "en_conservacion"
+          ],
+          [
+            "2033-01-02",
+            "acceso_restringido"
+          ],
+          [
+            "2038-01-02",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "en_conservacion",
+            "inicio": "2028-01-01",
+            "vencimiento": "2033-01-01"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-01-01",
+            "en_conservacion"
+          ],
+          [
+            "2033-01-02",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "DD": {
+            "norma": "amlr",
+            "estado": "en_conservacion",
+            "inicio": "2028-01-01",
+            "vencimiento": "2033-01-01"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-01-01",
+            "en_conservacion"
+          ],
+          [
+            "2033-01-02",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "en_conservacion",
+            "inicio": "2028-01-01",
+            "vencimiento": "2033-01-01"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-01-01",
+            "en_conservacion"
+          ],
+          [
+            "2033-01-02",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "DD": {
+            "norma": "amlr",
+            "estado": "en_conservacion",
+            "inicio": "2028-01-01",
+            "vencimiento": "2033-01-01"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-01-01",
+            "en_conservacion"
+          ],
+          [
+            "2033-01-02",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "en_conservacion",
+            "inicio": "2028-01-01",
+            "acceso_restringido_desde": "2033-01-02",
+            "vencimiento": "2038-01-01"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2028-01-01",
+            "en_conservacion"
+          ],
+          [
+            "2033-01-02",
+            "acceso_restringido"
+          ],
+          [
+            "2038-01-02",
+            "eliminacion_exigida"
+          ]
+        ]
+      }
+    }
+  }
+}

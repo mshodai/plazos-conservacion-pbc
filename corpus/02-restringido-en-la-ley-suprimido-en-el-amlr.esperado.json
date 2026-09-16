@@ -1,0 +1,186 @@
+{
+  "caso": "02-restringido-en-la-ley-suprimido-en-el-amlr",
+  "demuestra": "Diligencia debida de una relación terminada el 2029-06-30, a fecha 2035-01-01. El mismo día (2034-07-01) en que la Ley pasa a acceso restringido (quinto año, D-4), el AMLR exige suprimir (V + 1, D-2). T-1 a T-3 siguen el AMLR porque el plazo empieza después de A; T-4 mantiene la Ley.",
+  "resultado": {
+    "codigo_salida": 1,
+    "estados": {
+      "ley_10_2010": "acceso_restringido",
+      "amlr": "supresion_exigida",
+      "T-1": "supresion_exigida",
+      "T-2": "supresion_exigida",
+      "T-3": "supresion_exigida",
+      "T-4": "acceso_restringido"
+    },
+    "transicion_coincide": false,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2029-06-30",
+            "acceso_restringido_desde": "2034-07-01",
+            "vencimiento": "2039-06-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2029-06-30",
+            "en_conservacion"
+          ],
+          [
+            "2034-07-01",
+            "acceso_restringido"
+          ],
+          [
+            "2039-07-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2029-06-30",
+            "vencimiento": "2034-06-30"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2029-06-30",
+            "en_conservacion"
+          ],
+          [
+            "2034-07-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "DD": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2029-06-30",
+            "vencimiento": "2034-06-30"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2029-06-30",
+            "en_conservacion"
+          ],
+          [
+            "2034-07-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2029-06-30",
+            "vencimiento": "2034-06-30"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2029-06-30",
+            "en_conservacion"
+          ],
+          [
+            "2034-07-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "DD": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2029-06-30",
+            "vencimiento": "2034-06-30"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2029-06-30",
+            "en_conservacion"
+          ],
+          [
+            "2034-07-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "DD": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2029-06-30",
+            "acceso_restringido_desde": "2034-07-01",
+            "vencimiento": "2039-06-30"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2029-06-30",
+            "en_conservacion"
+          ],
+          [
+            "2034-07-01",
+            "acceso_restringido"
+          ],
+          [
+            "2039-07-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      }
+    }
+  }
+}

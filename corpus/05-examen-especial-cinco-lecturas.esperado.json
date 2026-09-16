@@ -1,0 +1,343 @@
+{
+  "caso": "05-examen-especial-cinco-lecturas",
+  "demuestra": "Examen especial (apertura 2021-01-10, cierre 2021-02-15, decisión 2021-02-20, comunicación 2021-02-25) de una relación terminada el 2022-03-31, a fecha 2031-02-18. El RD 25.4 no dice desde cuándo cuentan los diez años: EE-1 y EE-2 ya exigen eliminar, EE-3 a EE-5 siguen en acceso restringido, y la Ley da indeterminado. El AMLR cuenta desde la terminación y exige suprimir desde el 2027-04-01.",
+  "resultado": {
+    "codigo_salida": 1,
+    "estados": {
+      "ley_10_2010": "indeterminado",
+      "amlr": "supresion_exigida",
+      "T-1": "indeterminado",
+      "T-2": "supresion_exigida",
+      "T-3": "indeterminado",
+      "T-4": "indeterminado"
+    },
+    "transicion_coincide": false,
+    "regimenes": {
+      "ley_10_2010": {
+        "lecturas": {
+          "EE-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-01-10",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-01-10"
+          },
+          "EE-2": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-02-15",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-15"
+          },
+          "EE-3": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-02-20",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-20"
+          },
+          "EE-4": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-02-25",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-25"
+          },
+          "EE-5": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2022-03-31",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2032-03-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-01-10",
+            "indeterminado"
+          ],
+          [
+            "2022-03-31",
+            "en_conservacion"
+          ],
+          [
+            "2027-04-01",
+            "acceso_restringido"
+          ],
+          [
+            "2031-01-11",
+            "indeterminado"
+          ],
+          [
+            "2032-04-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "amlr": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2022-03-31",
+            "vencimiento": "2027-03-31"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2022-03-31",
+            "en_conservacion"
+          ],
+          [
+            "2027-04-01",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-1": {
+        "lecturas": {
+          "EE-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-01-10",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-01-10"
+          },
+          "EE-2": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-02-15",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-15"
+          },
+          "EE-3": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-02-20",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-20"
+          },
+          "EE-4": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-02-25",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-25"
+          },
+          "EE-5": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2022-03-31",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2032-03-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-01-10",
+            "indeterminado"
+          ],
+          [
+            "2022-03-31",
+            "en_conservacion"
+          ],
+          [
+            "2027-04-01",
+            "acceso_restringido"
+          ],
+          [
+            "2031-01-11",
+            "indeterminado"
+          ],
+          [
+            "2032-04-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "T-2": {
+        "lecturas": {
+          "77.3": {
+            "norma": "amlr",
+            "estado": "supresion_exigida",
+            "inicio": "2022-03-31",
+            "vencimiento": "2027-03-31"
+          }
+        },
+        "avisos": [
+          "D-10"
+        ],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-01-10",
+            "indeterminado"
+          ],
+          [
+            "2022-03-31",
+            "en_conservacion"
+          ],
+          [
+            "2027-04-01",
+            "acceso_restringido"
+          ],
+          [
+            "2027-07-10",
+            "supresion_exigida"
+          ]
+        ]
+      },
+      "T-3": {
+        "lecturas": {
+          "EE-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-01-10",
+            "vencimiento": "2031-01-10"
+          },
+          "EE-2": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-02-15",
+            "vencimiento": "2031-02-15"
+          },
+          "EE-3": {
+            "norma": "ley",
+            "estado": "en_conservacion",
+            "inicio": "2021-02-20",
+            "vencimiento": "2031-02-20"
+          },
+          "EE-4": {
+            "norma": "ley",
+            "estado": "en_conservacion",
+            "inicio": "2021-02-25",
+            "vencimiento": "2031-02-25"
+          },
+          "EE-5": {
+            "norma": "ley",
+            "estado": "en_conservacion",
+            "inicio": "2022-03-31",
+            "vencimiento": "2032-03-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-01-10",
+            "indeterminado"
+          ],
+          [
+            "2022-03-31",
+            "en_conservacion"
+          ],
+          [
+            "2027-04-01",
+            "acceso_restringido"
+          ],
+          [
+            "2027-07-10",
+            "en_conservacion"
+          ],
+          [
+            "2031-01-11",
+            "indeterminado"
+          ],
+          [
+            "2032-04-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      },
+      "T-4": {
+        "lecturas": {
+          "EE-1": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-01-10",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-01-10"
+          },
+          "EE-2": {
+            "norma": "ley",
+            "estado": "eliminacion_exigida",
+            "inicio": "2021-02-15",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-15"
+          },
+          "EE-3": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-02-20",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-20"
+          },
+          "EE-4": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2021-02-25",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2031-02-25"
+          },
+          "EE-5": {
+            "norma": "ley",
+            "estado": "acceso_restringido",
+            "inicio": "2022-03-31",
+            "acceso_restringido_desde": "2027-04-01",
+            "vencimiento": "2032-03-31"
+          }
+        },
+        "avisos": [],
+        "linea_temporal": [
+          [
+            null,
+            "plazo_no_iniciado"
+          ],
+          [
+            "2021-01-10",
+            "indeterminado"
+          ],
+          [
+            "2022-03-31",
+            "en_conservacion"
+          ],
+          [
+            "2027-04-01",
+            "acceso_restringido"
+          ],
+          [
+            "2031-01-11",
+            "indeterminado"
+          ],
+          [
+            "2032-04-01",
+            "eliminacion_exigida"
+          ]
+        ]
+      }
+    }
+  }
+}
