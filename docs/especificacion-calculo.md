@@ -387,9 +387,9 @@ Relación de negocios del 2012-01-01 al **2026-12-31**. Operación ejecutada el 
 | Acceso restringido desde | — (R = 2032-01-01 > V) | 2032-01-01 | — |
 | Eliminación / supresión desde | 2024-04-02 | 2037-01-01 | 2032-01-01 |
 
-- **`fecha_referencia = 2025-01-01`, régimen `ley_10_2010`** (antes de A, así que T-1 a T-4 dan lo mismo):
+- **`fecha_referencia = 2025-01-01`, régimen `ley_10_2010`** (antes de A, así que T-1 a T-4 dan lo mismo). Ese día la relación sigue viva: en la entrada, `fecha_terminacion` es `null`, porque un hecho no puede ser posterior a la fecha de referencia (modelo, `ERR-09`).
   - OP-1: `eliminacion_exigida`, con la relación todavía viva.
-  - OP-2: `en_conservacion`.
+  - OP-2: `plazo_no_iniciado`: su inicio es la terminación, que aún no ha ocurrido.
   - `estado = indeterminado`.
 - **`fecha_referencia = 2032-06-01`, régimen `ley_10_2010`:**
   - OP-1: `eliminacion_exigida`.
@@ -419,14 +419,16 @@ Relación terminada el **2023-09-30**. Examen especial: apertura 2019-02-01, cie
 
 ### Ejemplo 6. Política interna: diez años frente a ninguna regla
 
-Política aprobada el **2020-01-01** y sustituida el **2026-01-01**. `fecha_referencia = 2028-01-01`.
+Política aprobada el **2020-01-01** y sustituida el **2026-01-01**, registrada en el expediente de una relación de negocios que sigue viva. `fecha_referencia = 2028-01-01`.
+
+Un documento de esta categoría no puede estar en un expediente sin hecho inicial (`tipo = null` solo admite `aplicacion_fondos`: modelo, `ERR-05`), así que CI-3 siempre aplica. «Tiene hecho inicial» se lee como `tipo` distinto de `null`: con la relación viva, H es `null` y CI-3 da `plazo_no_iniciado`, igual que EE-5.
 
 - **Ley:**
   - CI-1: V = 2030-01-01, `en_conservacion`.
   - CI-2: V = 2036-01-01, `en_conservacion`.
-  - CI-3 no aplica.
-  - `estado = en_conservacion` ([D-6]). Nunca pasa a `acceso_restringido` ([D-8]).
-- **AMLR:** `estado = sin_regla`. Lecturas: SR-1 `sin_regla`; SR-2 `en_conservacion`; SR-3 no calculable.
+  - CI-3: `plazo_no_iniciado`.
+  - `estado = indeterminado` ([D-6]), aunque las tres lecturas obligan a conservar. Mientras la relación siga viva no hay R, así que no hay acceso restringido; cuando termine, CI-3 empezará a contar y R existirá.
+- **AMLR:** `estado = sin_regla` ([D-17]). Lecturas: SR-1 `sin_regla`; SR-2/CI-1 y SR-2/CI-2 `en_conservacion`; SR-2/CI-3 `plazo_no_iniciado`; SR-3 `plazo_no_iniciado`.
 
 ### Ejemplo 7. Prórroga de la autoridad
 
