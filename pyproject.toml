@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plazos-conservacion-pbc"
+version = "0.1.0"
+description = "Calcula el estado de conservación de documentos de prevención del blanqueo de capitales según la Ley 10/2010 y el AMLR"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
