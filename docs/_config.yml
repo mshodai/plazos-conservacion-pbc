@@ -1,1 +1,4 @@
 title: Plazos de conservación de documentación PBC
+
+plugins:
+  - jekyll-sitemap
