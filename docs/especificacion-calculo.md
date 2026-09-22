@@ -545,7 +545,9 @@ El código mira las **lecturas** de cada régimen en cada documento, no el estad
 - En las categorías sin regla del AMLR, el estado del régimen es `sin_regla` ([D-17]), pero las lecturas SR-2 y SR-3 (§7.3) dan estados de la Ley o del art. 77.3. Si alguna de ellas exige actuar, el código es 1, aunque el estado mostrado sea `sin_regla`: con esa lectura hay que actuar.
 - Seis regímenes con estados distintos, ninguno de los cuales exige actuar (caso 06 del corpus: `en_conservacion` y `sin_regla`), dan 0.
 
-La discrepancia entre regímenes no cambia el código: sigue en el informe (§9.1, [D-21]). El informe en JSON da `exige_actuar` para el expediente y para cada documento.
+La discrepancia entre regímenes no cambia el código: sigue en el informe (§9.1, [D-21]).
+
+**El informe dice qué lo activa.** `exige_actuar` no es solo verdadero o falso: da el régimen, la lectura y el estado de cada lectura que exige actuar, para que un código 1 junto a un estado que no exige nada (`sin_regla`, `indeterminado` o cualquier otro) se explique en el propio informe. En JSON, cada documento lleva `exige_actuar = {"valor": …, "activado_por": [{"regimen", "lectura", "estado"}, …]}`, y el expediente lo mismo, con el `documento` en cada elemento. `lectura` es `null` solo si el régimen no tiene lecturas y su estado exige actuar. En texto, cada documento tiene un apartado «Exige actuar» con esas lecturas por régimen, y señala «estado del régimen: …» cuando el estado mostrado no es uno de los que exigen actuar. Es la misma forma que en `plazos-actualizacion-pbc` (D-41).
 
 **[D-27, retirada]** Era: un `indeterminado` da código 1 aunque los seis regímenes coincidan, y el código es 1 si los regímenes dan estados distintos. Sustituida por [D-28]: daba 1 cuando los regímenes discrepaban aunque ninguna lectura exigiera hacer nada (caso 06 del corpus, o un examen especial de una relación viva).
 

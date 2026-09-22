@@ -90,6 +90,15 @@ class PeriodoDistinto:
 
 
 @dataclass(frozen=True)
+class Activador:
+    """D-28: una lectura de un régimen que da un estado que exige actuar."""
+
+    regimen: str
+    lectura: str | None
+    estado: str
+
+
+@dataclass(frozen=True)
 class InformeDocumento:
     resultado: ResultadoDocumento
     lineas: dict[str, tuple[Tramo, ...]]
@@ -124,13 +133,22 @@ class InformeDocumento:
         return INDETERMINADO in self.estados.values()
 
     @property
+    def activadores(self) -> tuple[Activador, ...]:
+        """D-28: cada régimen y lectura que da un estado que exige actuar, en el orden de REGIMENES."""
+        activadores = []
+        for regimen, res in self.resultado.regimenes.items():
+            if res.lecturas:
+                activadores += [
+                    Activador(regimen, l.id, l.estado) for l in res.lecturas if l.estado in ESTADOS_QUE_EXIGEN_ACTUAR
+                ]
+            elif res.estado in ESTADOS_QUE_EXIGEN_ACTUAR:
+                activadores.append(Activador(regimen, None, res.estado))
+        return tuple(activadores)
+
+    @property
     def exige_actuar(self) -> bool:
         """D-28: alguna lectura de algún régimen da un estado que exige actuar."""
-        return any(
-            estado in ESTADOS_QUE_EXIGEN_ACTUAR
-            for res in self.resultado.regimenes.values()
-            for estado in ({l.estado for l in res.lecturas} or {res.estado})
-        )
+        return bool(self.activadores)
 
 
 @dataclass(frozen=True)
@@ -283,12 +301,22 @@ def como_dict(inf: Informe) -> dict:
         "fecha_referencia": _fecha(inf.fecha_referencia),
         "fecha_aplicacion_amlr": _fecha(inf.fecha_aplicacion_amlr),
         "nota_linea_temporal": NOTA_LINEA_TEMPORAL if inf.valida else None,
-        "exige_actuar": inf.exige_actuar if inf.valida else None,
+        "exige_actuar": {
+            "valor": inf.exige_actuar,
+            "activado_por": [
+                {"documento": d.id, **_activador_dict(a)} for d in inf.documentos for a in d.activadores
+            ],
+        }
+        if inf.valida
+        else None,
         "documentos": [
             {
                 "id": d.id,
                 "categoria": d.resultado.categoria,
-                "exige_actuar": d.exige_actuar,
+                "exige_actuar": {
+                    "valor": d.exige_actuar,
+                    "activado_por": [_activador_dict(a) for a in d.activadores],
+                },
                 "comparacion": {
                     "estados_distintos": d.estados_distintos,
                     "ley_y_amlr_difieren": d.ley_y_amlr_difieren,
@@ -337,6 +365,25 @@ def _periodo(desde, hasta) -> str:
     if hasta is None:
         return f"desde el {desde}"
     return f"del {desde} al {hasta}"
+
+
+def _activador_dict(a: Activador) -> dict:
+    return {"regimen": a.regimen, "lectura": a.lectura, "estado": a.estado}
+
+
+def _exige_actuar_texto(doc: InformeDocumento) -> list[str]:
+    """D-28: qué régimen y qué lectura exigen actuar, para que el código 1 se explique en el informe."""
+    if not doc.exige_actuar:
+        return ["  No: ninguna lectura de ningún régimen exige actuar (D-28)."]
+    lineas = ["  Sí (D-28). Lo exigen:"]
+    por_regimen: dict[str, list[str]] = {}
+    for a in doc.activadores:
+        por_regimen.setdefault(a.regimen, []).append(f"{a.lectura}: {a.estado}" if a.lectura else a.estado)
+    for regimen, lecturas in por_regimen.items():
+        estado = doc.estados[regimen]
+        nota = "" if estado in ESTADOS_QUE_EXIGEN_ACTUAR else f" (estado del régimen: {estado})"
+        lineas.append(f"    {regimen:<{ANCHO_REGIMEN}}  {'; '.join(lecturas)}{nota}")
+    return lineas
 
 
 def _lectura_texto(lectura: Lectura) -> str:
@@ -413,6 +460,9 @@ def texto(inf: Informe) -> str:
                 lineas.append(f"    {_periodo(p.desde, p.hasta)}{antes}: {_estados_texto(p.estados)}")
         else:
             lineas.append("  Los seis regímenes coinciden en toda la línea temporal.")
+
+        lineas += ["", f"Exige actuar el {ref}:"]
+        lineas += _exige_actuar_texto(doc)
 
         lineas += ["", "Línea temporal (◀ fecha de referencia):"]
         for regimen in REGIMENES:

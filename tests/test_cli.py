@@ -70,8 +70,8 @@ def test_examen_especial_de_relacion_viva_devuelve_0(tmp_path, capsys):
     assert "amlr         plazo_no_iniciado" in salida
     assert main([escribir(tmp_path, entrada), "--json"]) == 0
     datos_json = json.loads(capsys.readouterr().out)
-    assert datos_json["exige_actuar"] is False
-    assert datos_json["documentos"][0]["exige_actuar"] is False
+    assert datos_json["exige_actuar"] == {"valor": False, "activado_por": []}
+    assert datos_json["documentos"][0]["exige_actuar"] == {"valor": False, "activado_por": []}
 
 
 def test_acceso_restringido_exige_actuar(capsys):
@@ -79,9 +79,30 @@ def test_acceso_restringido_exige_actuar(capsys):
     Solo el acceso restringido exige actuar (Ley 25.1), y basta para el 1."""
     assert main([str(RAIZ / "corpus" / "07-prorroga-de-la-autoridad.json"), "--json"]) == 1
     datos_json = json.loads(capsys.readouterr().out)
-    assert datos_json["exige_actuar"] is True
+    activado_por = datos_json["exige_actuar"]["activado_por"]
+    assert datos_json["exige_actuar"]["valor"] is True
+    assert {(a["regimen"], a["estado"]) for a in activado_por} == {
+        ("ley_10_2010", "acceso_restringido"),
+        ("T-4", "acceso_restringido"),
+    }
     estados = {r: v["estado"] for r, v in datos_json["documentos"][0]["regimenes"].items()}
     assert set(estados.values()) == {"acceso_restringido", "conservacion_prorrogada"}
+
+
+def test_sin_regla_con_una_lectura_que_exige_actuar(tmp_path, capsys):
+    """D-28, lectura literal: el caso 06 en 2035. El AMLR da «sin_regla» como estado, pero su
+    lectura SR-3 (art. 77.3 por extensión) ya exige suprimir. El informe dice qué régimen y qué
+    lectura dan el 1."""
+    entrada = json.loads((RAIZ / "corpus" / "06-control-interno-sin-regla-en-el-amlr.json").read_text(encoding="utf-8"))
+    entrada["fecha_referencia"] = "2035-01-01"
+    assert main([escribir(tmp_path, entrada), "--json"]) == 1
+    documento = json.loads(capsys.readouterr().out)["documentos"][0]
+    assert documento["regimenes"]["amlr"]["estado"] == "sin_regla"
+    assert {"regimen": "amlr", "lectura": "SR-3", "estado": "supresion_exigida"} in documento["exige_actuar"]["activado_por"]
+    assert main([escribir(tmp_path, entrada)]) == 1
+    salida = capsys.readouterr().out
+    assert "SR-3: supresion_exigida" in salida
+    assert "(estado del régimen: sin_regla)" in salida
 
 
 def test_ejemplo_del_modelo(tmp_path, capsys):
