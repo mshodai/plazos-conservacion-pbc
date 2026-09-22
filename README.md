@@ -156,6 +156,7 @@ Los documentos se descargaron el 15 de septiembre de 2026. Las URL y las huellas
 
 - [validador-cadena-verifactu](https://github.com/mshodai/validador-cadena-verifactu): comprueba la integridad de una cadena de registros de facturación de Verifactu.
 - [calculo-titularidad-real](https://github.com/mshodai/calculo-titularidad-real): calcula la titularidad real bajo la Ley 10/2010 y el AMLR.
+- [plazos-actualizacion-pbc](https://github.com/mshodai/plazos-actualizacion-pbc): calcula la fecha de la próxima revisión obligatoria de la información de un cliente bajo la Ley 10/2010 y el AMLR.
 
 ## Licencia
 
