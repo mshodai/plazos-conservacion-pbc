@@ -12,11 +12,8 @@ Hay dos grupos:
 - **Autor.** Órgano emisor, tal como figura en la cabecera del documento. Entre paréntesis, el editor del PDF según sus metadatos (`pdfinfo`).
 - **Versión o fecha declarada.** Copiada literalmente del documento.
 - **Fecha de descarga.** En la normativa de conservación, es la de la descarga original: la fecha de creación de los ficheros en `calculo-titularidad-real`. Las copias de este repositorio se crearon el 2026-09-16 al copiarlas. Los metadatos de origen de macOS (`kMDItemWhereFroms`) confirman que se descargaron de `https://www.boe.es/` o de `https://eur-lex.europa.eu/`, pero no guardan la URL completa.
-- **URL.** Es la dirección canónica deducida del identificador de cada documento, tomada de `calculo-titularidad-real`. Allí se comprobó el 2026-09-15:
-  - las del BOE devuelven un fichero idéntico al local (mismo SHA-256);
-  - EUR-Lex respondió a la descarga automática con `202` y un cuerpo vacío, así que su URL **no se ha podido comprobar**.
-
-  En este repositorio no se han vuelto a comprobar.
+- **URL.** Es la dirección canónica deducida del identificador de cada documento, tomada de `calculo-titularidad-real`. Todas se comprobaron por descarga el 22/09/2026: cada una devolvió un fichero idéntico al local (mismo SHA-256), también la de EUR-Lex.
+  - EUR-Lex rechaza a veces las descargas automáticas: responde `202` con un cuerpo vacío. Por eso, en la primera comprobación, hecha en `calculo-titularidad-real` el 2026-09-15, su URL no se pudo comprobar (las del BOE sí), y el 22/09/2026 hicieron falta varios intentos.
 
   El RGPD se descargó del BOE el 2026-09-17 con `curl` desde la URL indicada. Una segunda descarga ese mismo día dio el mismo SHA-256.
 
