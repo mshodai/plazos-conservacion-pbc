@@ -70,7 +70,7 @@ Cómo leerlo:
 - **Lecturas.** De qué regla sale cada estado, con su inicio, su vencimiento y la cita. `DD` es la lectura única de la diligencia debida con la Ley; `77.3`, la del AMLR.
 - **Avisos.** Aquí, que la supresión del AMLR se refiere solo a los datos personales.
 
-El código de salida es 1, porque los regímenes no coinciden.
+El código de salida es 1, porque alguna lectura exige actuar: con T-2 hay que suprimir, y con la Ley, T-1 y T-4, restringir el acceso.
 
 ## Instalación
 
@@ -86,8 +86,8 @@ plazos-conservacion corpus/03-plazo-en-curso-el-10-de-julio-de-2027.json
 **Uso:** `plazos-conservacion FICHERO [--json]`. Con `--json`, el mismo informe en JSON, con las fechas en formato `AAAA-MM-DD`.
 
 **Códigos de salida:**
-- **0:** en la fecha de referencia, los seis regímenes dan el mismo estado para todos los documentos y ninguno es `indeterminado`. En el corpus solo pasa en el caso 01.
-- **1:** en algún documento los regímenes dan estados distintos, o alguno es `indeterminado`. Solo mira la fecha de referencia: si coinciden hoy y difieren más adelante, el código es 0 y la diferencia está en la línea temporal.
+- **1:** en la fecha de referencia, en algún documento, alguna lectura de algún régimen exige actuar: da `eliminacion_exigida`, `supresion_exigida` o `acceso_restringido`.
+- **0:** ninguna lectura lo exige, aunque los regímenes discrepen; la discrepancia está en el informe. En el corpus pasa en los casos 01 y 06. Solo mira la fecha de referencia: lo que haya que hacer más adelante está en la línea temporal.
 - **2:** el fichero no se puede leer o la entrada no es válida. Los errores de validación salen con su código (`ERR-01` a `ERR-09`) y la ruta del dato.
 
 **Con tu propio expediente.** La entrada es un JSON con el sujeto obligado, el hecho que inicia el cómputo (terminación de la relación, ejecución de la operación ocasional o negativa), los documentos con sus fechas, las prórrogas de la autoridad y si hay un procedimiento judicial pendiente. El formato, con un ejemplo, está en [docs/modelo-datos.md](docs/modelo-datos.md). La entrada recoge hechos, no el régimen: el régimen es un parámetro del cálculo.
@@ -116,7 +116,7 @@ Donde la norma no fija desde cuándo cuenta el plazo, el cálculo da una lectura
 
 Si las lecturas de un régimen dan estados distintos, el estado es `indeterminado`, con las lecturas a la vista. Los estados posibles son `plazo_no_iniciado`, `en_conservacion`, `acceso_restringido`, `eliminacion_exigida`, `conservacion_prorrogada`, `conservacion_facultativa_77_4`, `supresion_exigida`, `sin_regla` (categorías que el AMLR no regula) e `indeterminado`.
 
-Además, la línea temporal de cada régimen y los periodos en que los regímenes difieren. Las reglas completas, con las decisiones propias numeradas (D-1 a D-27) y su motivo, están en la [especificación del cálculo](docs/especificacion-calculo.md).
+Además, la línea temporal de cada régimen y los periodos en que los regímenes difieren. Las reglas completas, con las decisiones propias numeradas (D-1 a D-28) y su motivo, están en la [especificación del cálculo](docs/especificacion-calculo.md).
 
 ## Qué no hace
 

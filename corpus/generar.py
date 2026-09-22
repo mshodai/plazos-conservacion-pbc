@@ -335,11 +335,12 @@ def _caso_06():
         "Análisis de riesgo del 2028-01-15, sustituido el 2029-01-15, en el expediente de una operación "
         "ocasional del 2028-02-01, a fecha 2030-06-01. La Ley (RD 29.2) lo conserva diez años con las lecturas "
         "CI-1 a CI-3, que hoy coinciden. El art. 77.1 del AMLR no lo incluye: sin_regla (D-17), con las "
-        "lecturas SR-1 a SR-3. T-1 a T-3 quedan en sin_regla desde A; T-4 sigue la Ley.",
+        "lecturas SR-1 a SR-3. T-1 a T-3 quedan en sin_regla desde A; T-4 sigue la Ley. Código 0, aunque los "
+        "regímenes discrepan: ninguna lectura exige actuar, porque todas dan en_conservacion o sin_regla (D-28).",
         expediente(6, "2030-06-01", hecho("operacion_ocasional", ejecucion="2028-02-01"),
                    documento("comunicacion_control_interno", "2028-01-15", "análisis de riesgo inventado",
                              subtipo="analisis_riesgo", fecha_fin_vigencia="2029-01-15")),
-        resultado(1, [CONS, SIN, SIN, SIN, SIN, CONS], {
+        resultado(0, [CONS, SIN, SIN, SIN, SIN, CONS], {
             LEY: reg(ley, linea_ley),
             AMLR: reg(amlr, linea(SIN)),
             T1: reg(sin_regla, linea_sin_regla),
@@ -462,8 +463,9 @@ def readme():
         "(`NN-nombre.esperado.json`): el estado del documento en los seis regímenes en la fecha de referencia, "
         "sus lecturas con sus fechas, los avisos y la línea temporal de cada régimen. Los resultados esperados "
         "están escritos a mano en `generar.py` a partir de `docs/especificacion-calculo.md`. El código de salida "
-        "es el de `plazos-conservacion` (§9.3): 0 si los seis regímenes dan el mismo estado y ninguno es "
-        "`indeterminado`; 1 si no.",
+        "es el de `plazos-conservacion` (§9.3): 1 si en algún documento alguna lectura de algún régimen exige "
+        "actuar (`eliminacion_exigida`, `supresion_exigida` o `acceso_restringido`); 0 si ninguna lo exige, "
+        "aunque los regímenes discrepen (D-28).",
         "",
         "| Caso | Referencia | " + " | ".join(REGIMENES) + " | Código |",
         "|---|---|" + "---|" * len(REGIMENES) + "---|",

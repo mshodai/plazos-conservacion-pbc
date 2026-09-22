@@ -18,13 +18,16 @@ from dataclasses import dataclass, replace
 from datetime import date, timedelta
 
 from plazos.calculo import (
+    ACCESO_RESTRINGIDO,
     AMLR,
+    ELIMINACION_EXIGIDA,
     FECHA_77_4,
     FIN_PA,
     INDETERMINADO,
     LEY,
     PLAZO_AMLR,
     REGIMENES,
+    SUPRESION_EXIGIDA,
     TRANSICION,
     Lectura,
     ResultadoDocumento,
@@ -35,6 +38,9 @@ from plazos.calculo import (
 from plazos.modelo import Entrada, Incidencia, ResultadoCarga
 
 UN_DIA = timedelta(days=1)
+
+# D-28: los estados que exigen hacer algo con el documento.
+ESTADOS_QUE_EXIGEN_ACTUAR = frozenset({ELIMINACION_EXIGIDA, SUPRESION_EXIGIDA, ACCESO_RESTRINGIDO})
 
 ADVERTENCIA = (
     "Resultado de un cálculo bajo las lecturas que declara la especificación "
@@ -117,6 +123,15 @@ class InformeDocumento:
     def hay_indeterminado(self) -> bool:
         return INDETERMINADO in self.estados.values()
 
+    @property
+    def exige_actuar(self) -> bool:
+        """D-28: alguna lectura de algún régimen da un estado que exige actuar."""
+        return any(
+            estado in ESTADOS_QUE_EXIGEN_ACTUAR
+            for res in self.resultado.regimenes.values()
+            for estado in ({l.estado for l in res.lecturas} or {res.estado})
+        )
+
 
 @dataclass(frozen=True)
 class Informe:
@@ -129,6 +144,11 @@ class Informe:
     @property
     def valida(self) -> bool:
         return not self.errores
+
+    @property
+    def exige_actuar(self) -> bool:
+        """D-28: en algún documento, alguna lectura exige actuar."""
+        return any(d.exige_actuar for d in self.documentos)
 
 
 # --- Construcción ------------------------------------------------------------
@@ -263,10 +283,12 @@ def como_dict(inf: Informe) -> dict:
         "fecha_referencia": _fecha(inf.fecha_referencia),
         "fecha_aplicacion_amlr": _fecha(inf.fecha_aplicacion_amlr),
         "nota_linea_temporal": NOTA_LINEA_TEMPORAL if inf.valida else None,
+        "exige_actuar": inf.exige_actuar if inf.valida else None,
         "documentos": [
             {
                 "id": d.id,
                 "categoria": d.resultado.categoria,
+                "exige_actuar": d.exige_actuar,
                 "comparacion": {
                     "estados_distintos": d.estados_distintos,
                     "ley_y_amlr_difieren": d.ley_y_amlr_difieren,

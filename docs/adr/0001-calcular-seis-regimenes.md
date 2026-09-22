@@ -34,7 +34,7 @@ Hay tres razones.
 
 Un plazo único resuelve cada uno de ellos en un sentido, sin decir cuál.
 
-**Veintisiete decisiones propias.** La especificación numera D-1 a D-27 (una de ellas, D-15, retirada), cada una con su motivo: cómo se cuentan los años, qué pasa con una prórroga requerida tarde, cómo se combina el plazo de la Ley con el del AMLR en T-4. A esas se suman las diecisiete de validación del modelo (V-1 a V-17). Ninguna es la ley. Un plazo sin más las incorpora todas sin nombrar ninguna.
+**Veintiocho decisiones propias.** La especificación numera D-1 a D-28 (dos de ellas, D-15 y D-27, retiradas), cada una con su motivo: cómo se cuentan los años, qué pasa con una prórroga requerida tarde, cómo se combina el plazo de la Ley con el del AMLR en T-4. A esas se suman las diecisiete de validación del modelo (V-1 a V-17). Ninguna es la ley. Un plazo sin más las incorpora todas sin nombrar ninguna.
 
 **El campo que más decide no puede quedar en manos de quien rellena la entrada.** En una primera versión, la entrada llevaba un campo `regimen`. Quien lo rellenaba con `ley_10_2010` elegía, sin saberlo, que la Ley pervive para los expedientes en curso; con `amlr`, que el AMLR se aplica desde el hecho original; y la lectura que cuenta desde el 10 de julio de 2027 no podía salir nunca. Esa elección es la que más cambia el resultado y es jurídica, no un dato del expediente. Por eso la entrada solo recoge hechos, y el régimen es un parámetro del cálculo que se recorre entero ([modelo-datos.md](../modelo-datos.md), §0; D-15, retirada).
 
@@ -46,7 +46,7 @@ Un plazo único resuelve cada uno de ellos en un sentido, sin decir cuál.
 
 **La línea temporal es una proyección, no una predicción.** Para cada régimen, el informe da las fechas en que cambia el estado. Se calculan aplicando los hechos que constan hoy en la entrada a todas las fechas: no saben cuándo se conoció cada hecho ni prevén hechos futuros, como la terminación de una relación viva o un requerimiento nuevo de la autoridad. Dicen cuándo cambiaría el estado si los hechos no cambian, no cuándo va a cambiar (D-25).
 
-**El código de salida solo mira la fecha de referencia.** Devuelve 0 si en esa fecha los seis regímenes dan el mismo estado para todos los documentos y ninguno es `indeterminado`; 1 si no; 2 si la entrada no es válida (especificación, §9.3; D-27). Un documento en el que los regímenes coinciden hoy y divergen dentro de cinco años da 0: la divergencia futura está en la línea temporal, no en el código.
+**El código de salida solo mira la fecha de referencia.** Devuelve 1 si en esa fecha alguna lectura de algún régimen exige actuar en algún documento (eliminar, suprimir o restringir el acceso); 0 si ninguna lo exige, aunque los regímenes discrepen; 2 si la entrada no es válida (especificación, §9.3; D-28, que sustituye a D-27). Lo que haya que hacer dentro de cinco años está en la línea temporal, no en el código.
 
 **La frontera entre lo que la herramienta calcula y lo que exige decidir a quién aplica la norma.** La herramienta calcula fechas y estados bajo lecturas declaradas, de forma exacta y reproducible. No decide:
 
@@ -59,7 +59,7 @@ Donde uno de estos puntos cambia el estado, la salida lo muestra como lecturas, 
 
 **Costes.**
 - El informe es largo: seis regímenes, sus lecturas y sus líneas temporales por documento. Quien solo quiere saber «cuándo borro» tiene que leer de qué depende la respuesta.
-- `indeterminado` y la falta de coincidencia son frecuentes: en el corpus, siete de ocho casos dan código 1. No es un defecto del cálculo; es la cantidad de cosas que la norma no resuelve.
+- `indeterminado` y la falta de coincidencia son frecuentes: en el corpus, siete de ocho casos tienen regímenes que no coinciden o algún `indeterminado`. No es un defecto del cálculo; es la cantidad de cosas que la norma no resuelve.
 - Cada decisión nueva hay que declararla en la especificación y reflejarla en el corpus, cuyos resultados esperados se escriben a mano.
 
 ## Referencias

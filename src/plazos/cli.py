@@ -7,10 +7,11 @@ from plazos.carga import cargar_fichero
 from plazos.salida import como_json, informe, texto
 
 EPILOG = (
-    "códigos de salida: 0 si, en la fecha de referencia, los seis regímenes (ley_10_2010, amlr, "
-    "T-1 a T-4) dan el mismo estado para todos los documentos y ninguno es «indeterminado»; 1 si "
-    "en algún documento difieren o alguno es «indeterminado»; 2 si el fichero no se puede leer o "
-    "la entrada no es válida."
+    "códigos de salida: 1 si, en la fecha de referencia, en algún documento alguna lectura de "
+    "alguno de los seis regímenes (ley_10_2010, amlr, T-1 a T-4) exige actuar, es decir, da "
+    "«eliminacion_exigida», «supresion_exigida» o «acceso_restringido»; 0 si ninguna lo exige, "
+    "aunque los regímenes discrepen (la discrepancia está en el informe); 2 si el fichero no se "
+    "puede leer o la entrada no es válida."
 )
 
 
@@ -61,10 +62,8 @@ def main(argv=None) -> int:
 def codigo_de_salida(inf) -> int:
     if not inf.valida:
         return 2
-    # §9.3. D-27: un `indeterminado` da 1 aunque los seis regímenes coincidan.
-    if any(doc.estados_distintos or doc.hay_indeterminado for doc in inf.documentos):
-        return 1
-    return 0
+    # §9.3. D-28: 1 si alguna lectura exige actuar; la discrepancia entre regímenes no cuenta.
+    return 1 if inf.exige_actuar else 0
 
 
 def _error(parser, mensaje):

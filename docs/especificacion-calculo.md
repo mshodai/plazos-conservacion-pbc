@@ -521,15 +521,33 @@ Como las lecturas de un régimen pueden cambiar según la fecha en que se evalú
 
 | Código | Cuándo |
 |---|---|
-| 0 | La entrada es válida y, en la fecha de referencia, los seis regímenes dan el mismo estado en todos los documentos, sin ningún `indeterminado`. También si el expediente no tiene documentos. |
-| 1 | La entrada es válida y en algún documento los regímenes dan estados distintos, o alguno da `indeterminado` ([D-27]). |
+| 0 | La entrada es válida y, en la fecha de referencia, ninguna lectura de ningún régimen exige actuar en ningún documento, aunque los regímenes discrepen ([D-28]). También si el expediente no tiene documentos. |
+| 1 | La entrada es válida y, en algún documento, alguna lectura de algún régimen da un estado que exige actuar: `eliminacion_exigida`, `supresion_exigida` o `acceso_restringido` ([D-28]). |
 | 2 | El fichero no existe, no se puede leer o no está en UTF-8; la entrada no es válida (modelo, §8); o la orden se usa mal. |
 
 Con una entrada no válida también se emite el informe, que lista los errores con su código y su ruta, en texto o en JSON. Los errores de lectura del fichero y de uso van a la salida de error.
 
-El código solo mira la fecha de referencia, no los periodos de la línea temporal: un documento en el que los regímenes coinciden hoy pero difieren más adelante da 0.
+El código solo mira la fecha de referencia, no los periodos de la línea temporal: un documento que hoy no exige actuar da 0 aunque la línea temporal muestre que lo exigirá más adelante.
 
-**[D-27] Un `indeterminado` da código 1 aunque los seis regímenes coincidan.** Por ejemplo, antes de A, con una operación dentro de una relación viva, los seis dan `indeterminado` (ejemplo 4). Coinciden, pero el estado depende de una lectura que la norma no resuelve, y el código 0 lo taparía. La alternativa, dar 0 siempre que coincidan, haría que el código solo reflejara diferencias entre regímenes y no dentro de uno.
+**[D-28] El código 1 señala que alguna lectura exige actuar.** Es el mismo criterio que `plazos-actualizacion-pbc` (D-41) y `registro-examen-especial-pbc` (D-25), aplicado a estos estados:
+
+| Estado | ¿Exige actuar? | Por qué |
+|---|---|---|
+| `eliminacion_exigida` | sí | Ley 25.1: «procediendo tras el mismo a su eliminación». |
+| `supresion_exigida` | sí | AMLR, art. 77.3: «las entidades obligadas suprimirán los datos personales». |
+| `acceso_restringido` | sí | Ley 25.1: desde el quinto año, la documentación «únicamente será accesible» por los órganos de control interno y quienes se indican. Hay que limitar el acceso. |
+| `plazo_no_iniciado`, `en_conservacion`, `conservacion_prorrogada` | no | Solo hay que conservar, que es lo que ya se hace. |
+| `conservacion_facultativa_77_4` | no | El art. 77.4 dice «podrá conservar»: la entidad puede conservar, y la supresión todavía no es exigible ([D-13]). |
+| `sin_regla` | no | Que el AMLR no dé regla para una categoría no es una obligación ([D-17]). |
+
+El código mira las **lecturas** de cada régimen en cada documento, no el estado agregado. Por eso:
+- Un `indeterminado` da 1 si alguna de sus lecturas exige actuar (ejemplo 4: OP-1 exige eliminar), y 0 si ninguna lo hace. Por ejemplo, un examen especial de una relación viva en 2023: con la Ley, EE-1 a EE-4 dan `en_conservacion` y EE-5 `plazo_no_iniciado`; con el AMLR, `plazo_no_iniciado`. Los regímenes discrepan, pero en todas las lecturas hay que conservar: 0.
+- En las categorías sin regla del AMLR, el estado del régimen es `sin_regla` ([D-17]), pero las lecturas SR-2 y SR-3 (§7.3) dan estados de la Ley o del art. 77.3. Si alguna de ellas exige actuar, el código es 1, aunque el estado mostrado sea `sin_regla`: con esa lectura hay que actuar.
+- Seis regímenes con estados distintos, ninguno de los cuales exige actuar (caso 06 del corpus: `en_conservacion` y `sin_regla`), dan 0.
+
+La discrepancia entre regímenes no cambia el código: sigue en el informe (§9.1, [D-21]). El informe en JSON da `exige_actuar` para el expediente y para cada documento.
+
+**[D-27, retirada]** Era: un `indeterminado` da código 1 aunque los seis regímenes coincidan, y el código es 1 si los regímenes dan estados distintos. Sustituida por [D-28]: daba 1 cuando los regímenes discrepaban aunque ninguna lectura exigiera hacer nada (caso 06 del corpus, o un examen especial de una relación viva).
 
 ---
 
@@ -563,4 +581,5 @@ El código solo mira la fecha de referencia, no los periodos de la línea tempor
 | D-24 | T-4 con F ≥ A: el estado de la Ley mientras conserve; después, el del AMLR si conserva; si los dos han vencido, el de la norma que acaba más tarde. | §4.2 |
 | D-25 | La línea temporal es una proyección de los hechos conocidos hoy, no una predicción. | §9.2 |
 | D-26 | La línea temporal muestra el estado de cada régimen, no el de cada lectura. | §9.2 |
-| D-27 | Un `indeterminado` da código de salida 1 aunque los seis regímenes coincidan. | §9.3 |
+| D-27 | *Retirada.* Era: un `indeterminado` o estados distintos dan código de salida 1. Sustituida por D-28. | §9.3 |
+| D-28 | El código 1 señala que alguna lectura exige actuar (`eliminacion_exigida`, `supresion_exigida` o `acceso_restringido`); el 0, que ninguna lo exige, aunque los regímenes discrepen. | §9.3 |

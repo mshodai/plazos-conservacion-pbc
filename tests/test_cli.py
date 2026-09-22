@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from ayudas import diligencia, relacion
+from ayudas import diligencia, examen, relacion
 from plazos.cli import main
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -51,11 +51,37 @@ def test_difieren_devuelve_1(tmp_path, capsys):
     assert "La Ley y el AMLR dan estados distintos" in capsys.readouterr().out
 
 
-def test_d27_indeterminado_devuelve_1(tmp_path):
-    """Antes de A los seis regímenes podrían coincidir en «indeterminado»: también es 1."""
+def test_indeterminado_con_eliminacion_devuelve_1(tmp_path):
+    """D-28: antes de A, OP-1 exige eliminar y OP-2 no ha empezado: una lectura exige actuar."""
     doc = {"id": "O", "categoria": "operaciones", "fecha_documento": "2014-04-01", "fecha_ejecucion_operacion": "2014-04-01"}
     entrada = datos("2025-01-01", relacion(None, "2012-01-01"), [doc])
     assert main([escribir(tmp_path, entrada)]) == 1
+
+
+def test_examen_especial_de_relacion_viva_devuelve_0(tmp_path, capsys):
+    """D-28: con la Ley, EE-1 a EE-4 dan en_conservacion y EE-5 plazo_no_iniciado (indeterminado);
+    con el AMLR, plazo_no_iniciado. Los regímenes discrepan, pero en todas las lecturas hay que
+    conservar: ninguna exige actuar. Con D-27, retirada, daba 1."""
+    doc = examen("EE", "2021-01-10", "2021-02-15", "2021-02-20", "2021-02-25")
+    entrada = datos("2023-01-01", relacion(None, "2018-06-01"), [doc])
+    assert main([escribir(tmp_path, entrada)]) == 0
+    salida = capsys.readouterr().out
+    assert "ley_10_2010  indeterminado" in salida
+    assert "amlr         plazo_no_iniciado" in salida
+    assert main([escribir(tmp_path, entrada), "--json"]) == 0
+    datos_json = json.loads(capsys.readouterr().out)
+    assert datos_json["exige_actuar"] is False
+    assert datos_json["documentos"][0]["exige_actuar"] is False
+
+
+def test_acceso_restringido_exige_actuar(capsys):
+    """D-28: en el caso 07 del corpus, la Ley da acceso_restringido y el AMLR conservacion_prorrogada.
+    Solo el acceso restringido exige actuar (Ley 25.1), y basta para el 1."""
+    assert main([str(RAIZ / "corpus" / "07-prorroga-de-la-autoridad.json"), "--json"]) == 1
+    datos_json = json.loads(capsys.readouterr().out)
+    assert datos_json["exige_actuar"] is True
+    estados = {r: v["estado"] for r, v in datos_json["documentos"][0]["regimenes"].items()}
+    assert set(estados.values()) == {"acceso_restringido", "conservacion_prorrogada"}
 
 
 def test_ejemplo_del_modelo(tmp_path, capsys):
