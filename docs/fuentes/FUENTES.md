@@ -41,3 +41,34 @@ a2fa3289de2f124c92748a181ad1499411b24ee3d26c74bd12781afa43cfa481  DOUE-L-2016-80
 ```
 
 Para comprobarlas: `cd docs/fuentes && shasum -a 256 -c` pegando el bloque anterior en la entrada estándar.
+
+## Datos para la vigilancia automática
+
+Repite en formato legible por máquina el fichero, la URL de descarga y la huella SHA-256 de cada documento de las secciones anteriores. Lo lee el script de `vigilancia-fuentes`, que comprueba que coincida con el texto. Si difieren, prevalece el texto.
+
+```json
+{
+  "documentos": [
+    {
+      "fichero": "BOE-A-2010-6737-consolidado.pdf",
+      "url": "https://www.boe.es/buscar/pdf/2010/BOE-A-2010-6737-consolidado.pdf",
+      "sha256": "4782a40bcf44165a97bc361520fd2b348acf7efbdfaa0a8d876c58332ff8601d"
+    },
+    {
+      "fichero": "BOE-A-2014-4742-consolidado.pdf",
+      "url": "https://www.boe.es/buscar/pdf/2014/BOE-A-2014-4742-consolidado.pdf",
+      "sha256": "59d7be80313780a8cf48e1f3f87b5bd2860855a126472c0374e1c30c7fc19f0d"
+    },
+    {
+      "fichero": "OJ_L_202401624_ES_TXT.pdf",
+      "url": "https://eur-lex.europa.eu/legal-content/ES/TXT/PDF/?uri=OJ:L_202401624",
+      "sha256": "666f18e1b5d4dd6bb7e927328bd8d84420d0919e692288f0b917c357df690974"
+    },
+    {
+      "fichero": "DOUE-L-2016-80807.pdf",
+      "url": "https://www.boe.es/doue/2016/119/L00001-00088.pdf",
+      "sha256": "a2fa3289de2f124c92748a181ad1499411b24ee3d26c74bd12781afa43cfa481"
+    }
+  ]
+}
+```
